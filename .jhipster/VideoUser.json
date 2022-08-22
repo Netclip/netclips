@@ -1,0 +1,34 @@
+{
+  "applications": "*",
+  "changelogDate": "20220822185301",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "video_user",
+  "fields": [],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "VideoUser",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "user",
+      "ownerSide": true,
+      "relationshipName": "internalUser",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityName": "comment",
+      "otherEntityRelationshipName": "videoUser",
+      "relationshipName": "comment",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "video",
+      "otherEntityRelationshipName": "uploader",
+      "relationshipName": "videos",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "service": "serviceImpl"
+}
