@@ -1,0 +1,44 @@
+entity Video {
+	contentRef String
+    title String
+    description String
+    likes Long
+    dislikes Long
+    uploadDate LocalDate
+}
+
+entity VideoUser {
+
+}
+
+entity Comment {
+	timeStamp Instant
+    content String
+    likes Long
+    dislikes Long
+}
+
+relationship OneToMany {
+	VideoUser{comment} to Comment{videoUser}
+}
+
+relationship OneToMany {
+	Video{comment} to Comment{video}
+}
+
+relationship OneToMany {
+	VideoUser{videos} to Video{uploader}
+}
+
+relationship OneToOne {
+    VideoUser{internalUser} to User
+}
+
+// Set pagination options
+paginate Video with infinite-scroll
+
+// Use Data Transfer Objects (DTO)
+// dto * with mapstruct
+
+service all with serviceImpl
+
