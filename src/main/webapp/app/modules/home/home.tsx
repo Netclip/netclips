@@ -1,5 +1,5 @@
 import './home.scss';
-
+import HomeGrid from 'app/shared/components/HomeGrid';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -11,9 +11,12 @@ export const Home = () => {
   const account = useAppSelector(state => state.authentication.account);
 
   return (
-    <Row>
-      <h1>NetClips</h1>
-    </Row>
+    <>
+      <div>
+        <h1>NetClips</h1>
+        <HomeGrid />
+      </div>
+    </>
   );
 };
 
