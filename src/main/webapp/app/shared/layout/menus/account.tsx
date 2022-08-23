@@ -14,6 +14,9 @@ const accountMenuItemsAuthenticated = () => (
     <MenuItem icon="sign-out-alt" to="/logout" data-cy="logout">
       Sign out
     </MenuItem>
+    <MenuItem icon="cloud-arrow-up" to="/account/upload/" data-cy="upload">
+      Upload
+    </MenuItem>
   </>
 );
 
