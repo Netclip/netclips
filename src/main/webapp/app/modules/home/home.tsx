@@ -14,6 +14,7 @@ export const Home = () => {
   return (
     <>
       <div>
+        <SearchBar />
         <h1>NetClips</h1>
         <HomeGrid />
       </div>
