@@ -1,0 +1,14 @@
+.searchcontainer {
+  // background-color: red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 4rem;
+}
+.searchbar {
+  height: 2.5rem;
+  border-radius: 30px;
+  border-width: 3px;
+  border-color: rgb(129, 255, 253);
+  padding: 10px;
+}
