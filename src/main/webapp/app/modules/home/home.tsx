@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { Row, Col, Alert } from 'reactstrap';
 
 import { useAppSelector } from 'app/config/store';
+import SearchBar from './SearchBar/searchbar';
 
 export const Home = () => {
   const account = useAppSelector(state => state.authentication.account);
