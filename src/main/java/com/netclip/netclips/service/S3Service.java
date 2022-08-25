@@ -26,6 +26,8 @@ public class S3Service {
 
     private final Logger log = LoggerFactory.getLogger(S3Service.class);
 
+    private final String prefix = "netclips/";
+
     @Value("${aws.bucket.name}")
     private String bucketName;
 
@@ -56,11 +58,10 @@ public class S3Service {
         } catch (Exception e){
             e.printStackTrace();
         }
-
     }
 
     private String generateUniqueFileName(MultipartFile multipartFile) {
-        return multipartFile.getOriginalFilename().replace(" ", "_")
+        return prefix + multipartFile.getOriginalFilename().replace(" ", "_")
             + "-" + new Date().getTime();
     }
 
@@ -77,6 +78,6 @@ public class S3Service {
     }
 
     public void deleteFile(String fileKey) {
-        s3Client.deleteObject(bucketName, fileKey);
+        s3Client.deleteObject(bucketName, prefix + fileKey);
     }
 }
