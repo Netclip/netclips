@@ -1,0 +1,15 @@
+.button {
+  background-color: rgb(233, 233, 233);
+  border-radius: 10px;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+  margin-bottom: 8px;
+  color: black;
+  width: 8rem;
+  cursor: pointer;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}

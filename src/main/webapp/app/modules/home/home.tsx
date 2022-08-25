@@ -7,6 +7,7 @@ import { Row, Col, Alert } from 'reactstrap';
 
 import { useAppSelector } from 'app/config/store';
 import SearchBar from './SearchBar/searchbar';
+import Like from 'app/shared/components/LikesDislikes/Likes';
 
 export const Home = () => {
   const account = useAppSelector(state => state.authentication.account);
