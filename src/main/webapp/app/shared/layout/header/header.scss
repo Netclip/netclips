@@ -38,6 +38,9 @@ Developement Ribbon
 Navbar styles
 ========================================================================== */
 .navbar-brand {
+  display: flex;
+  justify-content: space-between;
+  width: 52%;
   overflow: hidden;
 }
 
@@ -61,14 +64,17 @@ Navbar styles
     width: auto;
     display: inline-block;
     img {
-      height: 45px;
+      background-color: orange;
+      height: 70px;
+      width: 75px;
     }
   }
 }
 
 .brand-title {
+  font-stretch: extra-expanded;
   font-size: 24px;
-  color: $header-color;
+  color: rgb(246, 163, 8);
   &:hover {
     color: $header-color-hover;
     text-decoration: none;
