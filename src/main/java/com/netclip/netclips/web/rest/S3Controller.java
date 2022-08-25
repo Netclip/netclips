@@ -3,6 +3,8 @@ package com.netclip.netclips.web.rest;
 import com.netclip.netclips.domain.Video;
 import com.netclip.netclips.security.AuthoritiesConstants;
 import com.netclip.netclips.service.S3Service;
+import java.util.List;
+import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.Valid;
-import java.util.List;
 
 public class S3Controller {
 
@@ -34,8 +33,11 @@ public class S3Controller {
 
     @PostMapping("/upload")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
-    public String upload(@RequestPart(value = "file")MultipartFile file) {
+    public String upload(@RequestPart(value = "file") MultipartFile file) {
         return s3Service.uploadFile(file);
     }
+    //    @PostMapping("/upload/video")
+    //    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    //    public
 
 }
