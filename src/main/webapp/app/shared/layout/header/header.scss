@@ -65,8 +65,10 @@ Navbar styles
     display: inline-block;
     img {
       background-color: orange;
-      height: 80px;
-      width: 90px;
+      // height: 80px;
+      height: auto;
+      width: 7rem;
+      margin-top: -20px;
     }
   }
 }

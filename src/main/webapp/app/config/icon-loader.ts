@@ -32,6 +32,7 @@ import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers';
 import { faUsersCog } from '@fortawesome/free-solid-svg-icons/faUsersCog';
 import { faWrench } from '@fortawesome/free-solid-svg-icons/faWrench';
 import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons/faCloudArrowUp';
+import { faPlay } from '@fortawesome/free-solid-svg-icons';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 
@@ -70,6 +71,7 @@ export const loadIcons = () => {
     faUsers,
     faUsersCog,
     faWrench,
-    faCloudArrowUp
+    faCloudArrowUp,
+    faPlay
   );
 };
