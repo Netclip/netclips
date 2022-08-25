@@ -31,6 +31,9 @@ public class S3Service {
     @Value("${aws.bucket.name}")
     private String bucketName;
 
+    @Value("${aws.bucketUrl}")
+    private String bucketUrl;
+
     @Autowired
     private AmazonS3 s3Client;
 
@@ -46,18 +49,21 @@ public class S3Service {
             .collect(Collectors.toList());
     }
 
-    public void uploadFile(MultipartFile multipartFile) {
+    public String uploadFile(MultipartFile multipartFile) {
         String uniqueName = generateUniqueFileName(multipartFile);
+        String fileUrl = "";
         try {
             File file = multiPartToFile(multipartFile);
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, uniqueName, file);
             log.info("Uploading file: " + uniqueName);
             s3Client.putObject(putObjectRequest);
             log.info("Upload complete: " + uniqueName);
+            fileUrl = bucketUrl + "/" + uniqueName;
             file.delete();
         } catch (Exception e){
             e.printStackTrace();
         }
+        return fileUrl;
     }
 
     private String generateUniqueFileName(MultipartFile multipartFile) {
