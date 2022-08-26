@@ -40,7 +40,7 @@ Navbar styles
 .navbar-brand {
   display: flex;
   justify-content: space-between;
-  width: 52%;
+  width: 56%;
   overflow: hidden;
 }
 
@@ -50,7 +50,7 @@ Navbar styles
 }
 
 .navbar-version {
-  font-size: 10px;
+  font-size: 0px;
   color: $header-color-secondary;
   padding: 0 0 0 10px;
 }
@@ -60,23 +60,25 @@ Navbar styles
     text-decoration: none;
   }
   .brand-icon {
-    height: 35px;
+    height: 3px;
     width: auto;
     display: inline-block;
     img {
       background-color: orange;
-      height: 70px;
-      width: 75px;
+      // height: 80px;
+      height: auto;
+      width: 7rem;
+      margin-top: -20px;
     }
   }
 }
 
 .brand-title {
   font-stretch: extra-expanded;
-  font-size: 24px;
+  font-size: 50px;
   color: rgb(246, 163, 8);
   &:hover {
-    color: $header-color-hover;
+    color: blue;
     text-decoration: none;
   }
 }

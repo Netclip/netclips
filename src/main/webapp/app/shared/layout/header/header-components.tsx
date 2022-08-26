@@ -3,6 +3,7 @@ import React from 'react';
 import { NavItem, NavLink, NavbarBrand } from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Icons } from 'react-toastify';
 
 export const BrandIcon = props => (
   <div {...props} className="brand-icon">
