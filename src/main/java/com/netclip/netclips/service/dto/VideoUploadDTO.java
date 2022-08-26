@@ -14,6 +14,8 @@ public class VideoUploadDTO {
 
     private UserDTO uploader;
 
+    public VideoUploadDTO() {}
+
     public Long getId() {
         return id;
     }

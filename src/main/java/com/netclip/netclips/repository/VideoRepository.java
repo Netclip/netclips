@@ -1,6 +1,7 @@
 package com.netclip.netclips.repository;
 
 import com.netclip.netclips.domain.Video;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +10,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface VideoRepository extends JpaRepository<Video, Long> {}
+public interface VideoRepository extends JpaRepository<Video, Long> {
+    Optional<Video> findOneByContentRef(String contentRef);
+}

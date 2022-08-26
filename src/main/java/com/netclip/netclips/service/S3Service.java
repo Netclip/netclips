@@ -4,14 +4,6 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-import liquibase.pro.packaged.P;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,33 +12,38 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import liquibase.pro.packaged.P;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@PropertySource("classpath:aws.propertiegis")
 public class S3Service {
 
     private final Logger log = LoggerFactory.getLogger(S3Service.class);
 
     private final String prefix = "netclips/";
 
-    @Value("${aws.bucket.name}")
+    @Value("${bucketName}")
     private String bucketName;
 
-    @Value("${aws.bucketUrl}")
+    @Value("${bucketUrl}")
     private String bucketUrl;
 
     @Autowired
     private AmazonS3 s3Client;
 
-
     public List<Bucket> getAllBuckets() {
         return s3Client.listBuckets();
     }
 
-
     public List<String> getAllFileKeys() {
-        return s3Client.listObjectsV2(bucketName).getObjectSummaries().stream()
-            .map(S3ObjectSummary::getKey)
-            .collect(Collectors.toList());
+        return s3Client.listObjectsV2(bucketName).getObjectSummaries().stream().map(S3ObjectSummary::getKey).collect(Collectors.toList());
     }
 
     public String uploadFile(MultipartFile multipartFile) {
@@ -60,15 +57,14 @@ public class S3Service {
             log.info("Upload complete: " + uniqueName);
             fileUrl = bucketUrl + "/" + uniqueName;
             file.delete();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return fileUrl;
     }
 
     private String generateUniqueFileName(MultipartFile multipartFile) {
-        return prefix + multipartFile.getOriginalFilename().replace(" ", "_")
-            + "-" + new Date().getTime();
+        return prefix + multipartFile.getOriginalFilename().replace(" ", "_") + "-" + new Date().getTime();
     }
 
     private File multiPartToFile(MultipartFile multiFile) {

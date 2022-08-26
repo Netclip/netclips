@@ -17,24 +17,19 @@ import org.springframework.core.env.Environment;
 @PropertySource("classpath:aws.properties")
 public class AWSConfig {
 
-    @Value("${aws.access-key}")
+    @Value("${access-key}")
     private String accessKey;
 
-    @Value("${aws.secret-key}")
+    @Value("${secret-key}")
     private String accessKeySecret;
 
     @Bean
     public AmazonS3 awsS3() {
-        AWSCredentials credentials = new BasicAWSCredentials(
-            accessKey,
-            accessKeySecret
-        );
+        AWSCredentials credentials = new BasicAWSCredentials(accessKey, accessKeySecret);
         return AmazonS3ClientBuilder
             .standard()
             .withCredentials(new AWSStaticCredentialsProvider(credentials))
             .withRegion(Regions.US_EAST_1)
             .build();
-
     }
-
 }

@@ -6,6 +6,7 @@ import com.netclip.netclips.service.VideoService;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class VideoServiceImpl implements VideoService {
 
     private final Logger log = LoggerFactory.getLogger(VideoServiceImpl.class);
 
+    @Autowired
     private final VideoRepository videoRepository;
 
     public VideoServiceImpl(VideoRepository videoRepository) {
@@ -81,6 +83,13 @@ public class VideoServiceImpl implements VideoService {
     public Optional<Video> findOne(Long id) {
         log.debug("Request to get Video : {}", id);
         return videoRepository.findById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Video> findVideoByContentKey(String contentRef) {
+        log.debug("Request to get Video : {}", contentRef);
+        return videoRepository.findOneByContentRef(contentRef);
     }
 
     @Override

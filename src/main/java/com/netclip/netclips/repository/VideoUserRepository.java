@@ -1,6 +1,7 @@
 package com.netclip.netclips.repository;
 
 import com.netclip.netclips.domain.VideoUser;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +10,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface VideoUserRepository extends JpaRepository<VideoUser, Long> {}
+public interface VideoUserRepository extends JpaRepository<VideoUser, Long> {
+    Optional<VideoUser> findOneByInternalUser_Login(String login);
+}

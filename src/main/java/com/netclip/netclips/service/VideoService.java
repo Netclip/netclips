@@ -54,7 +54,7 @@ public interface VideoService {
      * @param contentRef the key of the S3 file
      * @return the entity
      */
-    Optional<Video> findOneByContentRef(String contentRef);
+    Optional<Video> findVideoByContentKey(String contentRef);
 
     /**
      * Delete the "id" video.
