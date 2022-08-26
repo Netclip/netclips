@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-@PropertySource("classpath:aws.propertiegis")
+@PropertySource("classpath:aws.properties")
 public class S3Service {
 
     private final Logger log = LoggerFactory.getLogger(S3Service.class);

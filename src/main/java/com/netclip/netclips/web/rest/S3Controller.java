@@ -13,6 +13,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+@RestController
+@RequestMapping("/api/files")
 public class S3Controller {
 
     private final Logger log = LoggerFactory.getLogger(S3Controller.class);
@@ -24,7 +26,7 @@ public class S3Controller {
         this.s3Service = s3Service;
     }
 
-    @GetMapping("/files")
+    @GetMapping("/")
     @ResponseBody
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public List<String> listAllFiles() {
