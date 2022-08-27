@@ -12,4 +12,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface VideoUserRepository extends JpaRepository<VideoUser, Long> {
     Optional<VideoUser> findOneByInternalUser_Login(String login);
+    Optional<VideoUser> findOneByInternalUser_Id(Long id);
 }

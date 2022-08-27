@@ -1,6 +1,7 @@
 package com.netclip.netclips.service.dto;
 
 import com.netclip.netclips.domain.Comment;
+import com.netclip.netclips.domain.Video;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -23,6 +24,20 @@ public class VideoDTO {
     private Set<Comment> comments;
 
     private String uploaderLogin;
+
+    private String uploaderId;
+
+    public VideoDTO(Video video) {
+        this.id = video.getId();
+        this.contentKey = video.getContentRef();
+        this.title = video.getTitle();
+        this.description = video.getDescription();
+        this.likes = video.getLikes();
+        this.dislikes = video.getDislikes();
+        this.uploadDate = video.getUploadDate();
+        this.comments = video.getComments();
+        this.uploaderLogin = video.getUploader().getInternalUser().getLogin();
+    }
 
     public Long getId() {
         return id;
@@ -94,5 +109,13 @@ public class VideoDTO {
 
     public void setUploaderLogin(String uploaderLogin) {
         this.uploaderLogin = uploaderLogin;
+    }
+
+    public String getUploaderId() {
+        return uploaderId;
+    }
+
+    public void setUploaderId(String uploaderId) {
+        this.uploaderId = uploaderId;
     }
 }
