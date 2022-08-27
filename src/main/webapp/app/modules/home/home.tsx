@@ -9,7 +9,6 @@ import { useAppSelector } from 'app/config/store';
 import SearchBar from './SearchBar/searchbar';
 import Like from 'app/shared/components/LikesDislikes/Likes';
 import { APP_DATE_FORMAT } from 'app/config/constants';
-import { getEntities } from 'app/entities/videos/videos.reducer';
 
 import Video from 'app/shared/components/Video';
 
