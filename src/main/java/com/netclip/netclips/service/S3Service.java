@@ -59,6 +59,7 @@ public class S3Service {
             file.delete();
         } catch (Exception e) {
             e.printStackTrace();
+            throw e;
         }
         return fileUrl;
     }

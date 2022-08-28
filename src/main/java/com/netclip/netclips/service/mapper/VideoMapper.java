@@ -18,12 +18,12 @@ public class VideoMapper {
         this.userRepo = userRepo;
     }
 
-    public Video videoUploadDTOToVideo(UploadDTO videoDTO) {
+    public Video videoUploadDTOToVideo(UploadDTO uploadDTO) {
         Video res = new Video();
-        res.setId(videoDTO.getId());
-        res.setTitle(videoDTO.getTitle());
-        res.setDescription(videoDTO.getDescription());
-        Optional<VideoUser> user = userRepo.findOneByInternalUser_Id(videoDTO.getUploaderId());
+        res.setId(uploadDTO.getId());
+        res.setTitle(uploadDTO.getTitle());
+        res.setDescription(uploadDTO.getDescription());
+        Optional<VideoUser> user = userRepo.findOneByInternalUser_Id(uploadDTO.getUploaderId());
         user.ifPresent(res::setUploader);
         return res;
     }

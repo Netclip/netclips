@@ -1,8 +1,14 @@
 package com.netclip.netclips.web.rest;
 
+import com.netclip.netclips.domain.User;
 import com.netclip.netclips.domain.Video;
 import com.netclip.netclips.repository.VideoRepository;
+import com.netclip.netclips.repository.VideoUserRepository;
+import com.netclip.netclips.security.AuthoritiesConstants;
+import com.netclip.netclips.service.S3Service;
 import com.netclip.netclips.service.VideoService;
+import com.netclip.netclips.service.dto.UploadDTO;
+import com.netclip.netclips.service.dto.VideoDTO;
 import com.netclip.netclips.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -11,13 +17,17 @@ import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
@@ -34,6 +44,12 @@ public class VideoResource {
 
     private static final String ENTITY_NAME = "video";
 
+    @Autowired
+    private final S3Service s3Service;
+
+    @Autowired
+    private final VideoUserRepository videoUserRepository;
+
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
@@ -41,10 +57,28 @@ public class VideoResource {
 
     private final VideoRepository videoRepository;
 
-    public VideoResource(VideoService videoService, VideoRepository videoRepository) {
+    public VideoResource(
+        VideoService videoService,
+        VideoRepository videoRepository,
+        VideoUserRepository videoUserRepository,
+        S3Service s3Service
+    ) {
         this.videoService = videoService;
         this.videoRepository = videoRepository;
+        this.videoUserRepository = videoUserRepository;
+        this.s3Service = s3Service;
     }
+
+    //    @PostMapping("/videos/upload")
+    //    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    //    public ResponseEntity<VideoDTO> uploadVideo(@RequestPart(value = "file") MultipartFile file, @AuthenticationPrincipal User user) {
+    //        try {
+    //            s3Service.uploadFile(file);
+    //
+    //        } catch (Exception e) {
+    //            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    //        }
+    //    }
 
     /**
      * {@code POST  /videos} : Create a new video.
