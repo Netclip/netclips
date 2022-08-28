@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getEntity } from './video.reducer';
 import Like from 'app/shared/components/LikesDislikes/Likes';
 import './videopage.scss';
+import Video from 'app/shared/components/Video';
 
 export const VideoDetail = () => {
   const dispatch = useAppDispatch();
@@ -28,7 +29,8 @@ export const VideoDetail = () => {
       </div>
 
       <h1>{videoEntity.title}</h1>
-      <div id="videoPlaceholder"></div>
+      <Video />
+      {/* <div id="videoPlaceholder"></div> */}
 
       <div className="videoDetailsContainer">
         <p>Description: {videoEntity.description}</p>
