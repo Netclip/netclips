@@ -1,0 +1,53 @@
+.videoPgContainer {
+  color: whitesmoke;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding-top: 2rem;
+  // background-color: rgb(47, 47, 69);
+}
+#uploaderContainer {
+  padding: 0;
+  margin-top: 0px;
+  margin-bottom: 2.5rem;
+  #uploaderText {
+    font-style: italic;
+    font-size: 13px;
+    cursor: pointer;
+  }
+}
+h1 {
+  text-align: center;
+  text-decoration: underline;
+  font-size: 40px;
+}
+#videoPlaceholder {
+  align-self: center;
+  background-color: rgba(220, 220, 220, 0.79);
+  width: 93%;
+  height: 32rem;
+}
+.videoDetailsContainer {
+  display: flex;
+  margin-top: 1rem;
+  padding-top: 0.55rem;
+  background-color: rgba(191, 11, 11, 0.303);
+  justify-content: space-between;
+
+  p {
+    padding: 0.55rem;
+  }
+  #likeButtonsContainer {
+    display: flex;
+    flex-direction: row-reverse;
+    margin-right: 2rem;
+
+    .button {
+      text-align: center;
+      margin-left: 1rem;
+      margin-right: 1rem;
+      align-self: flex-start;
+      padding: 0.3rem;
+    }
+  }
+}
