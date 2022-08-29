@@ -39,6 +39,11 @@ public class VideoUser implements Serializable {
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
+    public VideoUser(User user) {
+        this.id = user.getId();
+        this.internalUser = user;
+    }
+
     public Long getId() {
         return this.id;
     }

@@ -3,8 +3,10 @@ package com.netclip.netclips.service;
 import com.netclip.netclips.config.Constants;
 import com.netclip.netclips.domain.Authority;
 import com.netclip.netclips.domain.User;
+import com.netclip.netclips.domain.VideoUser;
 import com.netclip.netclips.repository.AuthorityRepository;
 import com.netclip.netclips.repository.UserRepository;
+import com.netclip.netclips.repository.VideoUserRepository;
 import com.netclip.netclips.security.AuthoritiesConstants;
 import com.netclip.netclips.security.SecurityUtils;
 import com.netclip.netclips.service.dto.AdminUserDTO;
@@ -35,6 +37,8 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    private final VideoUserRepository videoUserRepository;
+
     private final PasswordEncoder passwordEncoder;
 
     private final AuthorityRepository authorityRepository;
@@ -45,12 +49,14 @@ public class UserService {
         UserRepository userRepository,
         PasswordEncoder passwordEncoder,
         AuthorityRepository authorityRepository,
-        CacheManager cacheManager
+        CacheManager cacheManager,
+        VideoUserRepository videoUserRepository
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
+        this.videoUserRepository = videoUserRepository;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -177,6 +183,12 @@ public class UserService {
         userRepository.save(user);
         this.clearUserCaches(user);
         log.debug("Created Information for User: {}", user);
+
+        // Create and save VideoUser
+        VideoUser videoUser = new VideoUser(user);
+        videoUserRepository.save(videoUser);
+        log.debug("Created Information for VideoUser: {}", videoUser);
+
         return user;
     }
 
