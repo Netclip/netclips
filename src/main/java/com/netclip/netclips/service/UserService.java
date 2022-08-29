@@ -138,6 +138,12 @@ public class UserService {
         userRepository.save(newUser);
         this.clearUserCaches(newUser);
         log.debug("Created Information for User: {}", newUser);
+
+        // Create and save VideoUser
+        VideoUser videoUser = new VideoUser(newUser);
+        videoUserRepository.save(videoUser);
+        log.debug("Created Information for VideoUser: {}", videoUser);
+
         return newUser;
     }
 

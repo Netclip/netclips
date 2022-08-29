@@ -87,7 +87,7 @@ public class VideoResource {
     ) {
         try {
             Optional<VideoUser> vidUser = videoUserRepository.findOneByInternalUser_Login(auth.getName());
-            if (vidUser.isEmpty()) {
+            if (vidUser.isEmpty() || !vidUser.get().getInternalUser().isActivated()) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             s3Service.uploadFile(file);
