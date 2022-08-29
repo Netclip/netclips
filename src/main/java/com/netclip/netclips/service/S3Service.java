@@ -4,6 +4,9 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.netclip.netclips.domain.Video;
+import com.netclip.netclips.service.dto.UploadDTO;
+import com.netclip.netclips.service.mapper.VideoMapper;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,7 +39,23 @@ public class S3Service {
     private String bucketUrl;
 
     @Autowired
-    private AmazonS3 s3Client;
+    private final AmazonS3 s3Client;
+
+    @Autowired
+    private final VideoMapper videoMapper;
+
+    public S3Service(AmazonS3 s3client, VideoMapper videoMapper) {
+        this.s3Client = s3client;
+        this.videoMapper = videoMapper;
+    }
+
+    public VideoMapper getMapper() {
+        return this.videoMapper;
+    }
+
+    public Video convertUploadDTOtoVideo(UploadDTO uploadDTO) {
+        return videoMapper.videoUploadDTOToVideo(uploadDTO);
+    }
 
     public List<Bucket> getAllBuckets() {
         return s3Client.listBuckets();

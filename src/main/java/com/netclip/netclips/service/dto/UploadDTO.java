@@ -83,6 +83,8 @@ public class UploadDTO {
     }
 
     public interface UploadDTOBuild {
+        UploadDTOBuild title(String title);
+        UploadDTOBuild description(String description);
         UploadDTO build();
     }
 
@@ -126,12 +128,12 @@ public class UploadDTO {
             return this;
         }
 
-        public UploadDTOBuilder title(String title) {
+        public UploadDTOBuild title(String title) {
             this.title = title;
             return this;
         }
 
-        public UploadDTOBuilder description(String description) {
+        public UploadDTOBuild description(String description) {
             this.description = description;
             return this;
         }

@@ -2,6 +2,7 @@ package com.netclip.netclips.web.rest;
 
 import com.netclip.netclips.domain.User;
 import com.netclip.netclips.domain.Video;
+import com.netclip.netclips.domain.VideoUser;
 import com.netclip.netclips.repository.VideoRepository;
 import com.netclip.netclips.repository.VideoUserRepository;
 import com.netclip.netclips.security.AuthoritiesConstants;
@@ -12,6 +13,7 @@ import com.netclip.netclips.service.dto.VideoDTO;
 import com.netclip.netclips.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -25,6 +27,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -69,16 +72,40 @@ public class VideoResource {
         this.s3Service = s3Service;
     }
 
-    //    @PostMapping("/videos/upload")
-    //    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
-    //    public ResponseEntity<VideoDTO> uploadVideo(@RequestPart(value = "file") MultipartFile file, @AuthenticationPrincipal User user) {
-    //        try {
-    //            s3Service.uploadFile(file);
-    //
-    //        } catch (Exception e) {
-    //            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    //        }
+    //    @GetMapping("/testUser")
+    //    public ResponseEntity<String> testPrincipal(Authentication authentication) {
+    //        return new ResponseEntity<>(authentication.toString(), HttpStatus.OK);
     //    }
+
+    @PostMapping("/videos/upload")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    public ResponseEntity<VideoDTO> uploadVideo(
+        @RequestPart(value = "file") MultipartFile file,
+        Authentication auth,
+        @RequestParam(name = "title", required = false) String title,
+        @RequestParam(name = "description", required = false) String description
+    ) {
+        try {
+            Optional<VideoUser> vidUser = videoUserRepository.findOneByInternalUser_Login(auth.getName());
+            if (vidUser.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            s3Service.uploadFile(file);
+            UploadDTO upDTO = new UploadDTO.UploadDTOBuilder()
+                .userId(vidUser.get().getId())
+                .userLogin(vidUser.get().getInternalUser().getLogin())
+                .fileToUpload(file)
+                .title(title)
+                .description(description)
+                .build();
+
+            Video videoEntity = s3Service.convertUploadDTOtoVideo(upDTO);
+            videoRepository.save(videoEntity);
+            return new ResponseEntity<>(s3Service.getMapper().videoToVideoDTO(videoEntity), HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 
     /**
      * {@code POST  /videos} : Create a new video.
