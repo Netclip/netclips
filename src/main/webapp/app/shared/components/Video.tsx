@@ -1,27 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 const Video = () => {
   const [src, setSrc] = useState('');
+  const inputFileRef = useRef(null);
 
-  const handleChange = event => {
-    try {
-      // Get the uploaded file
-      const file = event.target.files[0];
-
-      // Transform file into blob URL
-      setSrc(URL.createObjectURL(file));
-    } catch (error) {
-      console.error(error);
-    }
+  const onFileChange = e => {
+    const file = e.target.files[0];
+    setSrc(URL.createObjectURL(file));
+    /*Selected files data can be collected here.*/
+    console.log(e.target.files);
+  };
+  const onBtnClick = e => {
+    e.preventDefault();
+    /*Collecting node-element and performing click*/
+    inputFileRef.current.click();
   };
 
   return (
-    <>
-      <video src={src} controls width="100%">
-        Sorry, your browser doesn't support embedded videos.
-      </video>
-      <input type="file" onChange={handleChange} />
-    </>
+    <div>
+      <video src={src} controls width="100%"></video>
+      <form className="some-container">
+        <input hidden type="file" ref={inputFileRef} onChange={onFileChange} />
+        <button onClick={onBtnClick}>Select file</button>
+      </form>
+    </div>
   );
 };
 
