@@ -101,6 +101,10 @@ public class VideoResource {
 
             Video videoEntity = s3Service.convertUploadDTOtoVideo(upDTO);
             videoRepository.save(videoEntity);
+
+            vidUser.get().addVideos(videoEntity);
+            videoUserRepository.save(vidUser.get());
+
             return new ResponseEntity<>(upDTO, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
