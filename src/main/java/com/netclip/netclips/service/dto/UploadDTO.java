@@ -4,9 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class UploadDTO {
 
-    private Long id;
-
-    private MultipartFile file;
+    private String fileUrl;
 
     private String title;
 
@@ -18,20 +16,20 @@ public class UploadDTO {
 
     public UploadDTO() {}
 
-    public Long getId() {
-        return id;
+    public UploadDTO(String fileUrl, String title, String description, String uploaderLogin, Long uploaderId) {
+        this.fileUrl = fileUrl;
+        this.title = title;
+        this.description = description;
+        this.uploaderLogin = uploaderLogin;
+        this.uploaderId = uploaderId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public String getFileUrl() {
+        return fileUrl;
     }
 
-    public MultipartFile getFile() {
-        return file;
-    }
-
-    public void setFile(MultipartFile file) {
-        this.file = file;
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
     }
 
     public String getTitle() {
@@ -66,20 +64,16 @@ public class UploadDTO {
         this.uploaderId = uploaderId;
     }
 
-    public interface UploadId {
-        UserId id(Long id);
-    }
-
     public interface UserId {
         UserLogin userId(Long id);
     }
 
     public interface UserLogin {
-        FileToUpload userLogin(String login);
+        FileURL userLogin(String login);
     }
 
-    public interface FileToUpload {
-        UploadDTOBuild fileToUpload(MultipartFile file);
+    public interface FileURL {
+        UploadDTOBuild uploadedFilePath(String fileUrl);
     }
 
     public interface UploadDTOBuild {
@@ -88,11 +82,9 @@ public class UploadDTO {
         UploadDTO build();
     }
 
-    public static class UploadDTOBuilder implements UploadId, UserId, UserLogin, FileToUpload, UploadDTOBuild {
+    public static class UploadDTOBuilder implements UserId, UserLogin, FileURL, UploadDTOBuild {
 
-        private Long id;
-
-        private MultipartFile file;
+        private String fileUrl;
 
         private String title;
 
@@ -105,26 +97,20 @@ public class UploadDTO {
         public UploadDTOBuilder() {}
 
         @Override
-        public UserId id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        @Override
         public UserLogin userId(Long id) {
             this.uploaderId = id;
             return this;
         }
 
         @Override
-        public FileToUpload userLogin(String login) {
+        public FileURL userLogin(String login) {
             this.uploaderLogin = login;
             return this;
         }
 
         @Override
-        public UploadDTOBuild fileToUpload(MultipartFile file) {
-            this.file = file;
+        public UploadDTOBuild uploadedFilePath(String fileUrl) {
+            this.fileUrl = fileUrl;
             return this;
         }
 
@@ -140,7 +126,7 @@ public class UploadDTO {
 
         @Override
         public UploadDTO build() {
-            return new UploadDTO();
+            return new UploadDTO(fileUrl, title, description, uploaderLogin, uploaderId);
         }
     }
 }

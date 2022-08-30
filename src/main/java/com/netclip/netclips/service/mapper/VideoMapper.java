@@ -5,6 +5,7 @@ import com.netclip.netclips.domain.VideoUser;
 import com.netclip.netclips.repository.VideoUserRepository;
 import com.netclip.netclips.service.dto.UploadDTO;
 import com.netclip.netclips.service.dto.VideoDTO;
+import java.time.LocalDate;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,10 +22,11 @@ public class VideoMapper {
 
     public Video videoUploadDTOToVideo(UploadDTO uploadDTO) {
         Video res = new Video();
-        res.setId(uploadDTO.getId());
         res.setTitle(uploadDTO.getTitle());
         res.setDescription(uploadDTO.getDescription());
-        Optional<VideoUser> user = userRepo.findOneByInternalUser_Id(uploadDTO.getUploaderId());
+        res.setUploadDate(LocalDate.now());
+        res.setContentRef(uploadDTO.getFileUrl());
+        Optional<VideoUser> user = userRepo.findByInternalUser_Login(uploadDTO.getUploaderLogin());
         user.ifPresent(res::setUploader);
         return res;
     }

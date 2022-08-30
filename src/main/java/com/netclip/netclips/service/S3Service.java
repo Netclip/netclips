@@ -74,7 +74,7 @@ public class S3Service {
             log.info("Uploading file: " + uniqueName);
             s3Client.putObject(putObjectRequest);
             log.info("Upload complete: " + uniqueName);
-            fileUrl = bucketUrl + "/" + uniqueName;
+            fileUrl = bucketUrl + uniqueName;
             file.delete();
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,7 +84,7 @@ public class S3Service {
     }
 
     private String generateUniqueFileName(MultipartFile multipartFile) {
-        return prefix + multipartFile.getOriginalFilename().replace(" ", "_") + "-" + new Date().getTime();
+        return prefix + new Date().getTime() + "-" + Objects.requireNonNull(multipartFile.getOriginalFilename()).replace(" ", "_");
     }
 
     private File multiPartToFile(MultipartFile multiFile) {

@@ -79,29 +79,29 @@ public class VideoResource {
 
     @PostMapping("/videos/upload")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
-    public ResponseEntity<VideoDTO> uploadVideo(
+    public ResponseEntity<UploadDTO> uploadVideo(
         @RequestPart(value = "file") MultipartFile file,
         Authentication auth,
         @RequestParam(name = "title", required = false) String title,
         @RequestParam(name = "description", required = false) String description
     ) {
         try {
-            Optional<VideoUser> vidUser = videoUserRepository.findOneByInternalUser_Login(auth.getName());
+            Optional<VideoUser> vidUser = videoUserRepository.findByInternalUser_Login(auth.getName());
             if (vidUser.isEmpty() || !vidUser.get().getInternalUser().isActivated()) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
-            s3Service.uploadFile(file);
+            String fileRef = s3Service.uploadFile(file);
             UploadDTO upDTO = new UploadDTO.UploadDTOBuilder()
                 .userId(vidUser.get().getId())
                 .userLogin(vidUser.get().getInternalUser().getLogin())
-                .fileToUpload(file)
+                .uploadedFilePath(fileRef)
                 .title(title)
                 .description(description)
                 .build();
 
             Video videoEntity = s3Service.convertUploadDTOtoVideo(upDTO);
             videoRepository.save(videoEntity);
-            return new ResponseEntity<>(s3Service.getMapper().videoToVideoDTO(videoEntity), HttpStatus.CREATED);
+            return new ResponseEntity<>(upDTO, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

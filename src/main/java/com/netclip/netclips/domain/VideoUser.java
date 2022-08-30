@@ -44,6 +44,8 @@ public class VideoUser implements Serializable {
         this.internalUser = user;
     }
 
+    public VideoUser() {}
+
     public Long getId() {
         return this.id;
     }

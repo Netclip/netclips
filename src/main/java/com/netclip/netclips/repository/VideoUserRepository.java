@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface VideoUserRepository extends JpaRepository<VideoUser, Long> {
-    Optional<VideoUser> findOneByInternalUser_Login(String login);
-    Optional<VideoUser> findOneByInternalUser_Id(Long id);
+    Optional<VideoUser> findByInternalUser_Login(String login);
+    Optional<VideoUser> findByInternalUser_Id(Long id);
 }
