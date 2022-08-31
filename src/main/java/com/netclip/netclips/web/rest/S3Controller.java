@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/files")
+@RequestMapping("/api/s3")
 public class S3Controller {
 
     private final Logger log = LoggerFactory.getLogger(S3Controller.class);
@@ -29,11 +29,19 @@ public class S3Controller {
         this.s3Service = s3Service;
     }
 
-    @GetMapping("/")
+    @GetMapping("/files")
     @ResponseBody
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public List<String> listAllFiles() {
         return s3Service.getAllFileKeys();
+    }
+
+    @DeleteMapping("/files/delete")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<String> deleteFile(@RequestParam(name = "fileKey") String fileKey) {
+        log.debug("REST request to delete file from S3 {}", fileKey);
+        s3Service.deleteFileByFullKey(fileKey);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     //    @PostMapping("/upload")
     //    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")

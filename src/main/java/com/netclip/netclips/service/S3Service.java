@@ -106,4 +106,8 @@ public class S3Service {
     public void deleteFile(String fileKey) {
         s3Client.deleteObject(bucketName, prefix + fileKey);
     }
+
+    public void deleteFileByFullKey(String fullFileKey) {
+        s3Client.deleteObject(bucketName, fullFileKey);
+    }
 }
