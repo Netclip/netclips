@@ -57,6 +57,10 @@ public class S3Service {
         return videoMapper.videoUploadDTOToVideo(uploadDTO);
     }
 
+    public String getPrefix() {
+        return this.prefix;
+    }
+
     public List<Bucket> getAllBuckets() {
         return s3Client.listBuckets();
     }
