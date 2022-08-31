@@ -53,6 +53,8 @@ public class Video implements Serializable {
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
+    public Video() {}
+
     public Long getId() {
         return this.id;
     }
