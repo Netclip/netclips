@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -30,14 +31,23 @@ public class VideoUser implements Serializable {
     @OneToMany(mappedBy = "videoUser")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "videoUser", "video" }, allowSetters = true)
+    @NotNull
     private Set<Comment> comments = new HashSet<>();
 
     @OneToMany(mappedBy = "uploader")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "comments", "uploader" }, allowSetters = true)
+    @NotNull
     private Set<Video> videos = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
+
+    public VideoUser(User user) {
+        this.id = user.getId();
+        this.internalUser = user;
+    }
+
+    public VideoUser() {}
 
     public Long getId() {
         return this.id;

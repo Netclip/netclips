@@ -1,13 +1,16 @@
 package com.netclip.netclips.service.impl;
 
+import com.netclip.netclips.domain.Video;
 import com.netclip.netclips.domain.VideoUser;
 import com.netclip.netclips.repository.VideoUserRepository;
 import com.netclip.netclips.service.VideoUserService;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -67,5 +70,11 @@ public class VideoUserServiceImpl implements VideoUserService {
     public void delete(Long id) {
         log.debug("Request to delete VideoUser : {}", id);
         videoUserRepository.deleteById(id);
+    }
+
+    public VideoUser deleteVideoFromSet(VideoUser videoUser, Video video) {
+        Set<Video> ownedVideos = videoUser.getVideos();
+        ownedVideos.remove(video);
+        return videoUser;
     }
 }

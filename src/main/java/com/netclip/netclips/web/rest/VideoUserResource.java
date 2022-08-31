@@ -1,5 +1,6 @@
 package com.netclip.netclips.web.rest;
 
+import com.netclip.netclips.domain.Video;
 import com.netclip.netclips.domain.VideoUser;
 import com.netclip.netclips.repository.VideoUserRepository;
 import com.netclip.netclips.service.VideoUserService;
@@ -9,10 +10,13 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -58,6 +62,17 @@ public class VideoUserResource {
             .created(new URI("/api/video-users/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
+    }
+
+    @GetMapping("/video-user/{id}/videos")
+    @Transactional
+    public ResponseEntity<Set<Video>> getUserVideos(@PathVariable Long id) {
+        log.debug("REST request to get user videos : {}", id);
+        Optional<VideoUser> userRes = videoUserRepository.findByInternalUser_Id(id);
+        if (userRes.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(userRes.get().getVideos(), HttpStatus.OK);
     }
 
     /**

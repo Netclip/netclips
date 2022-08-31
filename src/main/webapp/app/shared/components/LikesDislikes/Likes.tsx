@@ -1,23 +1,27 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Likes.scss';
 
 export const Like = props => {
-  const [likeCount, setLikeCount] = useState(0);
-  const [likeStatus, setLikeStatus] = useState(false);
+  var [likeCount, setLikeCount] = useState(props.likesCount);
+  var [likeStatus, setLikeStatus] = useState(false);
 
-  const incrementLikes = () => {
-    setLikeCount(likeCount + 1);
+  function incrementLikes() {
+    likeCount = props.likesCount;
+    setLikeCount(++likeCount);
     setLikeStatus(true);
 
     if (likeStatus == true) {
-      setLikeCount(likeCount - 1);
+      setLikeCount(--likeCount);
       setLikeStatus(false);
     }
-  };
+
+    useEffect(() => {
+      setLikeCount(likeCount);
+    });
+  }
 
   return (
-    // <button
     <div
       className="button"
       onClick={incrementLikes}
@@ -26,7 +30,8 @@ export const Like = props => {
         color: likeStatus ? 'black' : '',
       }}
     >
-      {props.text}: <FontAwesomeIcon icon={props.icon} /> {likeCount}
+      {props.text}: <FontAwesomeIcon icon={props.icon} />
+      <div>{likeCount}</div>
     </div>
   );
 };

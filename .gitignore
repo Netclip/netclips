@@ -157,3 +157,8 @@ Desktop.ini
 ######################
 /coverage/
 /.nyc_output/
+
+######################
+# API
+######################
+/src/main/resources/aws.properties
