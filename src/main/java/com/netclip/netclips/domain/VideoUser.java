@@ -31,13 +31,13 @@ public class VideoUser implements Serializable {
     @OneToMany(mappedBy = "videoUser")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "videoUser", "video" }, allowSetters = true)
-    //    @NotNull
+    @NotNull
     private Set<Comment> comments = new HashSet<>();
 
     @OneToMany(mappedBy = "uploader")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "comments", "uploader" }, allowSetters = true)
-    //    @NotNull
+    @NotNull
     private Set<Video> videos = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

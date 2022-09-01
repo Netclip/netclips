@@ -18,10 +18,10 @@ function HomeGrid() {
           <VideoPlayer url={'https://www.youtube.com/embed/F0B7HDiY-10'} />
         </Col>
         <Col>
-          <VideoPlayer url={'https://zcw-cohort8n3dot1.s3.amazonaws.com/netclips/1661985974602-street.mp4'} />
+          <VideoPlayer url={'https://www.youtube.com/embed/v7bnOxV4jAc'} />
         </Col>
         <Col>
-          <VideoPlayer url={'https://zcw-cohort8n3dot1.s3.amazonaws.com/netclips/1661985974602-street.mp4'} />
+          <VideoPlayer url={'https://www.youtube.com/embed/G8GaQdW2wHc'} />
         </Col>
       </Row>
     </Container>
