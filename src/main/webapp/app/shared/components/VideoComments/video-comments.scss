@@ -1,0 +1,46 @@
+.videoCommentsContainer {
+  background-color: rgba(11, 119, 191, 0.303);
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.buttons-container {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 10px;
+}
+
+.comments {
+  background-color: gainsboro;
+  width: 100%;
+  height: 5rem;
+  margin-top: 10px;
+}
+.comment-button-container {
+  display: flex;
+  flex-direction: row;
+  background-color: azure;
+  height: 40px;
+  width: 8rem;
+  color: black;
+  justify-content: center;
+  align-self: center;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+  align-items: center;
+}
+.comment-likes-dislikes {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 300px;
+  text-align: center;
+}
+
+.submit-comments {
+  justify-self: center;
+}
