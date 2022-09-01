@@ -11,6 +11,7 @@ import { getEntity } from './video.reducer';
 import Like from 'app/shared/components/LikesDislikes/Likes';
 import './videopage.scss';
 import Video from 'app/shared/components/Video';
+import VideoComments from 'app/shared/components/VideoComments/video-comments';
 
 export const VideoDetail = () => {
   const dispatch = useAppDispatch();
@@ -39,6 +40,7 @@ export const VideoDetail = () => {
           <Like className="button" text={'Dislikes'} icon={'trash'} likesCount={videoEntity.dislikes} />
         </div>
       </div>
+      <VideoComments />
     </div>
     // <Row>
     //   <Col md="8">
