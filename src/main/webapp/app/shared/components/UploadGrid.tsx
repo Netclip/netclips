@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Row, Col, Container } from 'reactstrap';
-import HomeGrid from './HomeGrid';
+import Uploader from './Uploader';
 
 export const UploadGrid = () => {
   return (
     <div>
-      <HomeGrid /> <h1>Myah is the best</h1>
+      <Uploader /> <h1>Myah is the best</h1>
     </div>
   );
 };
