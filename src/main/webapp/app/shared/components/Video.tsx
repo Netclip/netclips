@@ -18,7 +18,7 @@ const Video = () => {
 
   return (
     <div>
-      <video src={src} controls width="100%"></video>
+      <video src={src} controls width="480" height="360"></video>
       <form className="some-container">
         <input hidden type="file" ref={inputFileRef} onChange={onFileChange} />
         <button onClick={onBtnClick}>Select file</button>
