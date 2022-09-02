@@ -29,7 +29,6 @@ export const Home = () => {
         </div>
 
         <h1>NetClips</h1>
-        <Video />
         <HomeGrid />
       </div>
     </>
