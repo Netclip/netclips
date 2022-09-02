@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getEntity } from './video.reducer';
 import Like from 'app/shared/components/LikesDislikes/Likes';
 import './videopage.scss';
-import Video from 'app/shared/components/Video';
+import GetVideos from 'app/shared/components/GetVideos';
 import VideoComments from 'app/shared/components/VideoComments/video-comments';
 
 export const VideoDetail = () => {
@@ -30,7 +30,9 @@ export const VideoDetail = () => {
       </div>
 
       <h1>{videoEntity.title}</h1>
-      <Video />
+      <div>
+        <GetVideos />
+      </div>
       {/* <div id="videoPlaceholder"></div> */}
 
       <div className="videoDetailsContainer">

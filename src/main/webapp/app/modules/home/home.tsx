@@ -25,12 +25,10 @@ export const Home = () => {
         <Header />
         <SearchBar />
         <div className="app__page">
-          {/* <Sidebar /> */}
-          {/* <RecommendedVideos /> */}
+          <RecommendedVideos />
         </div>
 
         <h1>NetClips</h1>
-        <GetVideos />
       </div>
     </>
   );

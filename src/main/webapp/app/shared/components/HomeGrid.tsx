@@ -10,25 +10,18 @@ function HomeGrid(props) {
     const { video } = props;
 
     return (
-      <Container className="grid">
-        <Row className="row">
-          <Col>
-            <VideoPlayer url={'https://www.youtube.com/embed/gQlMMD8auMs'} />
-          </Col>
-          <Col>
-            <VideoPlayer url={'https://www.youtube.com/embed/gQlMMD8auMs'} />
-          </Col>
-          <Col>
-            <VideoPlayer url={'https://www.youtube.com/embed/F0B7HDiY-10'} />
-          </Col>
-          <Col>
-            <VideoPlayer url={'https://www.youtube.com/embed/v7bnOxV4jAc'} />
-          </Col>
-          <Col>
-            <VideoPlayer url={'https://www.youtube.com/embed/G8GaQdW2wHc'} />
-          </Col>
-        </Row>
-      </Container>
+      <>
+        <Container className="grid">
+          <Row className="row">
+            <Col>
+              <VideoPlayer url={video} />
+            </Col>
+            <Col>
+              <VideoPlayer url={video} />
+            </Col>
+          </Row>
+        </Container>
+      </>
     );
   };
 }
