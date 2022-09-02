@@ -1,7 +1,10 @@
 package com.netclip.netclips.service;
 
+import com.amazonaws.HttpMethod;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.netclip.netclips.domain.Video;
@@ -11,6 +14,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -69,22 +74,40 @@ public class S3Service {
         return s3Client.listObjectsV2(bucketName).getObjectSummaries().stream().map(S3ObjectSummary::getKey).collect(Collectors.toList());
     }
 
+    public String generatePresignedUrl(String fileKey) {
+        Date expireTime = new Date();
+        long expMs = Instant.now().toEpochMilli();
+        expMs += 1000 * 60 * 60;
+        expireTime.setTime(expMs);
+
+        try {
+            GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, fileKey)
+                .withMethod(HttpMethod.GET)
+                .withExpiration(expireTime);
+            URL url = s3Client.generatePresignedUrl(generatePresignedUrlRequest);
+            return url.toString();
+        } catch (SdkClientException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     public String uploadFile(MultipartFile multipartFile) {
         String uniqueName = generateUniqueFileName(multipartFile);
-        String fileUrl = "";
+        String fileKey = "";
         try {
             File file = multiPartToFile(multipartFile);
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, uniqueName, file);
             log.info("Uploading file: " + uniqueName);
             s3Client.putObject(putObjectRequest);
             log.info("Upload complete: " + uniqueName);
-            fileUrl = bucketUrl + uniqueName;
+            fileKey = uniqueName;
             file.delete();
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
-        return fileUrl;
+        return fileKey;
     }
 
     private String generateUniqueFileName(MultipartFile multipartFile) {

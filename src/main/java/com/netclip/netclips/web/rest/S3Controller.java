@@ -43,18 +43,11 @@ public class S3Controller {
         s3Service.deleteFileByFullKey(fileKey);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    //    @PostMapping("/upload")
-    //    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
-    //    public ResponseEntity<String> upload(@RequestPart(value = "file") MultipartFile file, @AuthenticationPrincipal User user) {
-    //        try {
-    //            s3Service.uploadFile(file);
-    //
-    //        } catch (Exception e) {
-    //            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    //        }
-    //    }
-    //    @PostMapping("/upload/video")
-    //    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
-    //    public
 
+    @GetMapping("get-video-url")
+    @ResponseBody
+    public String generatePresignedUrl(@RequestParam(name = "fileKey") String fileKey) {
+        log.debug("REST request to generate presigned URL on bucket object: {}", fileKey);
+        return s3Service.generatePresignedUrl(fileKey);
+    }
 }
