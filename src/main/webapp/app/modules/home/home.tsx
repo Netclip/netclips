@@ -14,6 +14,7 @@ import Video from 'app/shared/components/Video';
 import Sidebar from 'app/shared/components/test components/Sidebar';
 import RecommendedVideos from 'app/shared/components/test components/RecommendedVideos';
 import Header from 'app/shared/components/test components/Header';
+import GetVideos from 'app/shared/components/GetVideos';
 
 export const Home = () => {
   const account = useAppSelector(state => state.authentication.account);
@@ -24,12 +25,10 @@ export const Home = () => {
         <Header />
         <SearchBar />
         <div className="app__page">
-          {/* <Sidebar /> */}
           <RecommendedVideos />
         </div>
 
         <h1>NetClips</h1>
-        <HomeGrid />
       </div>
     </>
   );
