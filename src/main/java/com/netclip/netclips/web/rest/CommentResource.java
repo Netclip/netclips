@@ -1,7 +1,9 @@
 package com.netclip.netclips.web.rest;
 
 import com.netclip.netclips.domain.Comment;
+import com.netclip.netclips.domain.Video;
 import com.netclip.netclips.repository.CommentRepository;
+import com.netclip.netclips.repository.VideoRepository;
 import com.netclip.netclips.service.CommentService;
 import com.netclip.netclips.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -13,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -35,9 +38,12 @@ public class CommentResource {
 
     private final CommentRepository commentRepository;
 
-    public CommentResource(CommentService commentService, CommentRepository commentRepository) {
+    private final VideoRepository videoRepository;
+
+    public CommentResource(CommentService commentService, CommentRepository commentRepository, VideoRepository videoRepository) {
         this.commentService = commentService;
         this.commentRepository = commentRepository;
+        this.videoRepository = videoRepository;
     }
 
     /**
@@ -48,11 +54,18 @@ public class CommentResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/comments")
-    public ResponseEntity<Comment> createComment(@RequestBody Comment comment) throws URISyntaxException {
+    @Transactional(readOnly = true)
+    public ResponseEntity<Comment> createComment(@RequestBody Comment comment, @RequestParam(name = "video_id") Long videoId)
+        throws URISyntaxException {
         log.debug("REST request to save Comment : {}", comment);
         if (comment.getId() != null) {
             throw new BadRequestAlertException("A new comment cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        Optional<Video> videoRes = videoRepository.findById(videoId);
+        if (videoRes.isEmpty()) {
+            throw new BadRequestAlertException("Video cannot be found", ENTITY_NAME, "vidnotfound");
+        }
+
         Comment result = commentService.save(comment);
         return ResponseEntity
             .created(new URI("/api/comments/" + result.getId()))

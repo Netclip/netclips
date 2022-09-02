@@ -1,5 +1,6 @@
 package com.netclip.netclips.web.rest;
 
+import com.amazonaws.Response;
 import com.netclip.netclips.domain.User;
 import com.netclip.netclips.domain.Video;
 import com.netclip.netclips.domain.VideoUser;
@@ -11,6 +12,7 @@ import com.netclip.netclips.service.VideoService;
 import com.netclip.netclips.service.dto.UploadDTO;
 import com.netclip.netclips.service.dto.VideoDTO;
 import com.netclip.netclips.service.impl.VideoUserServiceImpl;
+import com.netclip.netclips.service.mapper.VideoMapper;
 import com.netclip.netclips.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -67,18 +69,22 @@ public class VideoResource {
 
     private final VideoRepository videoRepository;
 
+    private final VideoMapper videoMapper;
+
     public VideoResource(
         VideoService videoService,
         VideoRepository videoRepository,
         VideoUserRepository videoUserRepository,
         S3Service s3Service,
-        VideoUserServiceImpl videoUserService
+        VideoUserServiceImpl videoUserService,
+        VideoMapper videoMapper
     ) {
         this.videoService = videoService;
         this.videoRepository = videoRepository;
         this.videoUserRepository = videoUserRepository;
         this.s3Service = s3Service;
         this.videoUserService = videoUserService;
+        this.videoMapper = videoMapper;
     }
 
     //    @GetMapping("/testUser")
@@ -128,10 +134,10 @@ public class VideoResource {
         Optional<Video> videoRes = videoRepository.findById(id);
         Optional<VideoUser> videoUser = videoUserRepository.findByInternalUser_Login(auth.getName());
         if (videoUser.isEmpty() || videoRes.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Invalid video response", HttpStatus.BAD_REQUEST);
         }
         if (!videoRes.get().getUploader().getInternalUser().getLogin().equals(auth.getName())) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("You must be the video uploader or have admin privileges", HttpStatus.UNAUTHORIZED);
         }
         Video video = videoRes.get();
         VideoUser user = videoUser.get();
@@ -165,6 +171,18 @@ public class VideoResource {
             .created(new URI("/api/videos/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
+    }
+
+    @GetMapping("/videos/fetch-play-video/{id}")
+    public ResponseEntity<VideoDTO> fetchPlayableVideo(@PathVariable("id") Long id) {
+        log.debug("REST request to fetch a playable Video DTO: {}", id);
+        Optional<Video> videoRes = videoRepository.findById(id);
+        if (videoRes.isEmpty()) {
+            throw new BadRequestAlertException("Video by ID not found", ENTITY_NAME, "videonotfound");
+        }
+        VideoDTO videoDTO = videoMapper.videoToVideoDTO(videoRes.get());
+        videoDTO.setPreSignedUrl(s3Service.generatePresignedUrl(videoDTO.getContentKey()));
+        return ResponseEntity.ok(videoDTO);
     }
 
     /**
