@@ -37,6 +37,9 @@ Developement Ribbon
 /* ==========================================================================
 Navbar styles
 ========================================================================== */
+#app-header {
+  margin-bottom: 4rem;
+}
 .navbar-brand {
   display: flex;
   justify-content: space-between;
@@ -47,6 +50,7 @@ Navbar styles
 .jh-navbar .navbar-nav .nav-link {
   padding-right: 0;
   padding-left: 0;
+  padding-top: 0;
 }
 
 .navbar-version {
