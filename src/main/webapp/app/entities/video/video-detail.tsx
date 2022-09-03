@@ -8,6 +8,7 @@ import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { getEntity } from './video.reducer';
+import likeCount from 'app/shared/components/LikesDislikes/Likes';
 import Like from 'app/shared/components/LikesDislikes/Likes';
 import './videopage.scss';
 import GetVideos from 'app/shared/components/GetVideos';
@@ -37,8 +38,8 @@ export const VideoDetail = () => {
       <div className="videoDetailsContainer">
         <p>Description: {videoEntity.description}</p>
         <div id="likeButtonsContainer">
-          <Like className="button" text={'Likes'} icon={'heart'} likesCount={videoEntity.likes} />
-          <Like className="button" text={'Dislikes'} icon={'trash'} likesCount={videoEntity.dislikes} />
+          <Like className="button" text={'Likes'} icon={'heart'} likesCount={likeCount} />
+          <Like className="button" text={'Dislikes'} icon={'trash'} likesCount={null} />
         </div>
       </div>
       <VideoComments />
