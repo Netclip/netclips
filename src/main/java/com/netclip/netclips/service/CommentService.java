@@ -16,6 +16,8 @@ public interface CommentService {
      */
     Comment save(Comment comment);
 
+    List<Comment> getAllByVideo(Long videoId, int pageNo, int pageSize, String sortBy);
+
     /**
      * Updates a comment.
      *

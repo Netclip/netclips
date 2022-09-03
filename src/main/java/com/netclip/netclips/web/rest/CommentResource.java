@@ -1,20 +1,25 @@
 package com.netclip.netclips.web.rest;
 
+import com.amazonaws.Response;
 import com.netclip.netclips.domain.Comment;
 import com.netclip.netclips.domain.Video;
+import com.netclip.netclips.domain.VideoUser;
 import com.netclip.netclips.repository.CommentRepository;
 import com.netclip.netclips.repository.VideoRepository;
 import com.netclip.netclips.service.CommentService;
+import com.netclip.netclips.service.VideoService;
+import com.netclip.netclips.service.VideoUserService;
 import com.netclip.netclips.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.Instant;
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
@@ -40,10 +45,22 @@ public class CommentResource {
 
     private final VideoRepository videoRepository;
 
-    public CommentResource(CommentService commentService, CommentRepository commentRepository, VideoRepository videoRepository) {
+    private final VideoService videoService;
+
+    private final VideoUserService videoUserService;
+
+    public CommentResource(
+        CommentService commentService,
+        CommentRepository commentRepository,
+        VideoRepository videoRepository,
+        VideoService videoService,
+        VideoUserService videoUserService
+    ) {
         this.commentService = commentService;
         this.commentRepository = commentRepository;
         this.videoRepository = videoRepository;
+        this.videoService = videoService;
+        this.videoUserService = videoUserService;
     }
 
     /**
@@ -66,6 +83,9 @@ public class CommentResource {
             throw new BadRequestAlertException("Video cannot be found", ENTITY_NAME, "vidnotfound");
         }
 
+        log.debug("Saving comment to video id {}", videoRes.get().getId());
+        videoService.updateVideoComment(comment, videoRes.get());
+
         Comment result = commentService.save(comment);
         return ResponseEntity
             .created(new URI("/api/comments/" + result.getId()))
@@ -73,30 +93,78 @@ public class CommentResource {
             .body(result);
     }
 
+    @PostMapping("/comments/post")
+    @Transactional(readOnly = true)
+    public ResponseEntity<Comment> postComment(
+        @RequestParam(name = "video_id") Long videoId,
+        @RequestParam(name = "content") String content,
+        Authentication auth
+    ) throws URISyntaxException {
+        log.debug("REST request to post new Comment on video: {}", videoId);
+        Optional<Video> videoRes = videoRepository.findById(videoId);
+        Optional<VideoUser> videoUserRes = videoUserService.findByUserLogin(auth.getName());
+        if (videoRes.isEmpty()) {
+            throw new BadRequestAlertException("Video cannot be found", ENTITY_NAME, "vidnotfound");
+        }
+        if (videoUserRes.isEmpty()) {
+            throw new BadRequestAlertException("User cannot be found", ENTITY_NAME, "usernotfound");
+        }
+        Comment comment = new Comment().content(content).timeStamp(Instant.now()).videoUser(videoUserRes.get()).video(videoRes.get());
+        log.debug("Saving comment to video id {}", videoRes.get().getId());
+        videoService.updateVideoComment(comment, videoRes.get());
+        Comment result = commentService.save(comment);
+
+        return ResponseEntity
+            .created(new URI("/api/comments/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+    @GetMapping("/comments/video")
+    public ResponseEntity<List<Comment>> getCommentsById(
+        @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+        @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+        @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
+        @RequestParam(name = "video_id") Long id
+    ) {
+        List<Comment> res = commentService.getAllByVideo(id, pageNo, pageSize, sortBy);
+
+        return ResponseEntity.ok(res);
+    }
+
     /**
      * {@code PUT  /comments/:id} : Updates an existing comment.
      *
-     * @param id the id of the comment to save.
+     * @param commentId the id of the comment to save.
      * @param comment the comment to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated comment,
      * or with status {@code 400 (Bad Request)} if the comment is not valid,
      * or with status {@code 500 (Internal Server Error)} if the comment couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
+     **/
     @PutMapping("/comments/{id}")
-    public ResponseEntity<Comment> updateComment(@PathVariable(value = "id", required = false) final Long id, @RequestBody Comment comment)
-        throws URISyntaxException {
-        log.debug("REST request to update Comment : {}, {}", id, comment);
+    public ResponseEntity<Comment> updateComment(
+        @PathVariable(value = "id", required = false) final Long commentId,
+        @RequestBody Comment comment,
+        @RequestParam(name = "video_id") Long videoId
+    ) throws URISyntaxException {
+        log.debug("REST request to update Comment : {}, {}", commentId, comment);
+        Optional<Video> videoRes = videoRepository.findById(videoId);
         if (comment.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, comment.getId())) {
+        if (!Objects.equals(commentId, comment.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        if (!commentRepository.existsById(id)) {
+        if (!commentRepository.existsById(commentId)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        if (videoRes.isEmpty()) {
+            throw new BadRequestAlertException("Video cannot be found", ENTITY_NAME, "vidnotfound");
+        }
+
+        videoService.updateVideoComment(comment, videoRes.get());
 
         Comment result = commentService.update(comment);
         return ResponseEntity

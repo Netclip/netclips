@@ -1,5 +1,6 @@
 package com.netclip.netclips.service;
 
+import com.netclip.netclips.domain.Video;
 import com.netclip.netclips.domain.VideoUser;
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +47,10 @@ public interface VideoUserService {
      * @return the entity.
      */
     Optional<VideoUser> findOne(Long id);
+
+    VideoUser deleteVideoFromSet(VideoUser videoUser, Video video);
+
+    Optional<VideoUser> findByUserLogin(String login);
 
     /**
      * Delete the "id" videoUser.
