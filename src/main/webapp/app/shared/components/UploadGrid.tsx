@@ -10,7 +10,7 @@ export const UploadGrid = () => {
         <h3>NetClips</h3>
         <h4>File Upload</h4>
       </div>
-      <Uploader />
+      <FileUpload />
     </div>
   );
 };
