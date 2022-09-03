@@ -21,14 +21,14 @@ export const Home = () => {
 
   return (
     <>
-      <div>
-        <Header />
-        <SearchBar />
+      <SearchBar />
+      <div className="hipster">
         <div className="app__page">
+          <Sidebar />
           <RecommendedVideos />
         </div>
 
-        <h1>NetClips</h1>
+        {/*         <h1>NetClips</h1> */}
       </div>
     </>
   );
