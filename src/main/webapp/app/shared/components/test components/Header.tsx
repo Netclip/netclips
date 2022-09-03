@@ -13,19 +13,13 @@ function Header() {
 
   return (
     <div className="header">
-      {/* <div className='Header__left'>
-            <MenuSharpIcon />
+      <div className="Header__left">
+        <MenuSharpIcon />
 
-            <Link to="/">
-                <img
-                    className='header__logo'
-                    src='content/images/netclips.PNG'
-                    alt='netclips logo'
-                    
-                />
-            </Link>
-
-        </div> */}
+        <Link to="/">
+          <img className="header__logo" src="content/images/netclips.PNG" alt="netclips logo" />
+        </Link>
+      </div>
 
       <div className="header__input">
         <input onChange={e => setInputSearch(e.target.value)} value={inputSearch} placeholder="Search" type="text" />
@@ -34,15 +28,12 @@ function Header() {
           <SearchIcon className="header__inputButton" />
         </Link>
       </div>
-      {/* <div className='header__icons'>
-            <VideoCallSharpIcon className='header__icon' />
-            <AppsSharpIcon className='header__icon' />
-            <NotificationsSharpIcon className='header__icon' />
-            <Avatar
-                alt='Troy'
-                src='https://avatars.githubusercontent.com/u/73859033?s=96&v=4'
-            />
-        </div> */}
+      <div className="header__icons">
+        <VideoCallSharpIcon className="header__icon" />
+        <AppsSharpIcon className="header__icon" />
+        <NotificationsSharpIcon className="header__icon" />
+        <Avatar alt="Troy" src="https://avatars.githubusercontent.com/u/73859033?s=96&v=4" />
+      </div>
     </div>
   );
 }
