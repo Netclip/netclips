@@ -10,10 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,15 +50,15 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<Comment> getAllByVideo(Long videoId, int pageNo, int pageSize, String sortBy) {
+    public Page<Comment> getAllByVideo(Long videoId, int pageNo, int pageSize, String sortBy) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
 
         Page<Comment> pagedRes = commentRepository.findAllByVideo_Id(videoId, pageable);
 
         if (pagedRes.hasContent()) {
-            return pagedRes.getContent();
+            return pagedRes;
         }
-        return new ArrayList<>();
+        return new PageImpl<>(new ArrayList<>());
     }
 
     @Override

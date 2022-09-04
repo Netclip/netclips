@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -124,16 +125,15 @@ public class CommentResource {
     }
 
     @GetMapping("/comments/video")
-    public ResponseEntity<List<CommentDTO>> getCommentsById(
+    public ResponseEntity<Page<CommentDTO>> getCommentsById(
         @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
         @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
         @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
         @RequestParam(name = "video_id") Long id
     ) {
-        List<Comment> res = commentService.getAllByVideo(id, pageNo, pageSize, sortBy);
-        List<CommentDTO> comments = res.stream().map(commentService::CommentToCommentDTO).collect(Collectors.toList());
+        Page<CommentDTO> res = commentService.getAllByVideo(id, pageNo, pageSize, sortBy).map(commentService::CommentToCommentDTO);
 
-        return ResponseEntity.ok(comments);
+        return ResponseEntity.ok(res);
     }
 
     /**

@@ -4,6 +4,7 @@ import com.netclip.netclips.domain.Comment;
 import com.netclip.netclips.service.dto.CommentDTO;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
 
 /**
  * Service Interface for managing {@link Comment}.
@@ -17,7 +18,7 @@ public interface CommentService {
      */
     Comment save(Comment comment);
 
-    List<Comment> getAllByVideo(Long videoId, int pageNo, int pageSize, String sortBy);
+    Page<Comment> getAllByVideo(Long videoId, int pageNo, int pageSize, String sortBy);
 
     CommentDTO CommentToCommentDTO(Comment comment);
 
