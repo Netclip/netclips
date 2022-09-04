@@ -76,6 +76,12 @@ public class VideoServiceImpl implements VideoService {
                 if (video.getUploadDate() != null) {
                     existingVideo.setUploadDate(video.getUploadDate());
                 }
+                if (video.getViewCount() != null) {
+                    existingVideo.setViewCount(video.getViewCount());
+                }
+                if (video.getThumbnailRef() != null) {
+                    existingVideo.setThumbnailRef(video.getThumbnailRef());
+                }
 
                 return existingVideo;
             })

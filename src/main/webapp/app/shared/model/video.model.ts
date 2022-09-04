@@ -10,6 +10,8 @@ export interface IVideo {
   likes?: number | null;
   dislikes?: number | null;
   uploadDate?: string | null;
+  viewCount?: number | null;
+  thumbnailRef?: string | null;
   comments?: IComment[] | null;
   uploader?: IVideoUser | null;
 }

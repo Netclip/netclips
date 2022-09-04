@@ -89,6 +89,8 @@ export const VideoUpdate = () => {
               <ValidatedField label="Likes" id="video-likes" name="likes" data-cy="likes" type="text" />
               <ValidatedField label="Dislikes" id="video-dislikes" name="dislikes" data-cy="dislikes" type="text" />
               <ValidatedField label="Upload Date" id="video-uploadDate" name="uploadDate" data-cy="uploadDate" type="date" />
+              <ValidatedField label="View Count" id="video-viewCount" name="viewCount" data-cy="viewCount" type="text" />
+              <ValidatedField label="Thumbnail Ref" id="video-thumbnailRef" name="thumbnailRef" data-cy="thumbnailRef" type="text" />
               <ValidatedField id="video-uploader" name="uploader" data-cy="uploader" label="Uploader" type="select">
                 <option value="" key="0" />
                 {videoUsers

@@ -22,7 +22,7 @@ public class VideoUserRepositoryWithBagRelationshipsImpl implements VideoUserRep
 
     @Override
     public Optional<VideoUser> fetchBagRelationships(Optional<VideoUser> videoUser) {
-        return videoUser.map(this::fetchLikedVideos).map(this::fetchVideosDislikeds);
+        return videoUser.map(this::fetchLikedVideos).map(this::fetchVideosDisliked);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class VideoUserRepositoryWithBagRelationshipsImpl implements VideoUserRep
 
     @Override
     public List<VideoUser> fetchBagRelationships(List<VideoUser> videoUsers) {
-        return Optional.of(videoUsers).map(this::fetchLikedVideos).map(this::fetchVideosDislikeds).orElse(Collections.emptyList());
+        return Optional.of(videoUsers).map(this::fetchLikedVideos).map(this::fetchVideosDisliked).orElse(Collections.emptyList());
     }
 
     VideoUser fetchLikedVideos(VideoUser result) {
@@ -61,7 +61,7 @@ public class VideoUserRepositoryWithBagRelationshipsImpl implements VideoUserRep
         return result;
     }
 
-    VideoUser fetchVideosDislikeds(VideoUser result) {
+    VideoUser fetchVideosDisliked(VideoUser result) {
         return entityManager
             .createQuery(
                 "select videoUser from VideoUser videoUser left join fetch videoUser.videosDisliked where videoUser is :videoUser",
@@ -72,7 +72,7 @@ public class VideoUserRepositoryWithBagRelationshipsImpl implements VideoUserRep
             .getSingleResult();
     }
 
-    List<VideoUser> fetchVideosDislikeds(List<VideoUser> videoUsers) {
+    List<VideoUser> fetchVideosDisliked(List<VideoUser> videoUsers) {
         HashMap<Object, Integer> order = new HashMap<>();
         IntStream.range(0, videoUsers.size()).forEach(index -> order.put(videoUsers.get(index).getId(), index));
         List<VideoUser> result = entityManager

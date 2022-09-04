@@ -69,7 +69,7 @@ public class VideoUserServiceImpl implements VideoUserService {
     @Transactional(readOnly = true)
     public Optional<VideoUser> findOne(Long id) {
         log.debug("Request to get VideoUser : {}", id);
-        return videoUserRepository.findById(id);
+        return videoUserRepository.findOneWithEagerRelationships(id);
     }
 
     @Override
