@@ -17,8 +17,15 @@ import axios from 'axios';
 export const VideoDetail = () => {
   var [likeCount, setLikeCount] = useState(0);
   var [dislikeCount, setDislikeCount] = useState(0);
-  var [vidId, setVidId] = useState(window.location.href.slice(-1));
-  var [likeStatus, setLikeStatus] = useState(false);
+
+  var [likeButtonClicked, setLikeButtonClicked] = useState(false);
+  var [dislikeButtonClicked, setdislikeButtonClicked] = useState(false);
+  var urlStr = window.location.href;
+  var n = urlStr.lastIndexOf('/');
+  var result = urlStr.substring(n + 1);
+  var [vidId, setVidId] = useState(result);
+  // var [vidId, setVidId] = useState(window.location.href.slice(-1));
+  // var [likeStatus, setLikeStatus] = useState(false);
 
   const getBearerToken = () => {
     var authToken = localStorage.getItem('jhi-authenticationToken') || sessionStorage.getItem('jhi-authenticationToken');
@@ -28,7 +35,6 @@ export const VideoDetail = () => {
     }
     return null;
   };
-
   const axiosConfig = {
     timeout: 5000,
     headers: {
@@ -37,31 +43,39 @@ export const VideoDetail = () => {
       'Content-Type': 'application/json',
     },
   };
-  const fetchData = async () => {
+
+  const fetchLikes = async () => {
     try {
       await axios.get('api/videos', axiosConfig).then(response => {
-        setVidId(vidId);
-        var tempLikes = response.data[Number.parseInt(vidId) - 1].likes;
-        var tempDislikes = response.data[Number.parseInt(vidId) - 1].dislikes;
-        likeCount = tempLikes;
-        dislikeCount = tempDislikes;
+        var likesResults = response.data[Number.parseInt(vidId) - 1].likes;
+        console.log('this video id is -> ' + vidId);
+        console.log('video #' + vidId + ' likes= ' + likesResults);
+        setLikeCount(likesResults);
 
-        console.log('likes => ' + tempLikes);
-        console.log('dislikes => ' + tempDislikes);
-
-        setLikeCount(tempLikes);
-        setDislikeCount(tempDislikes);
-
-        console.log('likeCount: ' + likeCount);
-        console.log('dislikeCount: ' + dislikeCount);
-
-        setLikeStatus(true);
+        setLikeButtonClicked(true);
       });
-
-      if (likeStatus == true) {
+      if (likeButtonClicked == true) {
         setLikeCount(--likeCount);
-        // setDislikeCount(--dislikeCount);
-        setLikeStatus(false);
+        setLikeButtonClicked(false);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchDislikes = async () => {
+    try {
+      await axios.get('api/videos', axiosConfig).then(response => {
+        var dislikesResults = response.data[Number.parseInt(vidId) - 1].dislikes;
+        console.log('this video id is -> ' + vidId);
+        console.log('video #' + vidId + ' dislikes= ' + dislikesResults);
+        setDislikeCount(dislikesResults);
+
+        setdislikeButtonClicked(true);
+      });
+      if (dislikeButtonClicked == true) {
+        setDislikeCount(--dislikeCount);
+        setdislikeButtonClicked(false);
       }
     } catch (err) {
       console.log(err);
@@ -69,10 +83,48 @@ export const VideoDetail = () => {
 
     useEffect(() => {
       setLikeCount(likeCount);
-      setDislikeCount(dislikeCount);
+      // setLikeButtonClicked(true);
     }, []);
-    return likeCount && dislikeCount;
   };
+
+  // const fetchData = async () => {
+  //   try {
+  //     await axios.get('api/videos', axiosConfig).then(response => {
+  //       setVidId(vidId);
+  //       var tempLikes = response.data[Number.parseInt(vidId) - 1].likes;
+  //       var tempDislikes = response.data[Number.parseInt(vidId) - 1].dislikes;
+
+  //       console.log('likes => ' + tempLikes);
+  //       console.log('dislikes => ' + tempDislikes);
+  //       console.log('video id: '+vidId)
+
+  //       // likeCount = tempLikes;
+  //       // dislikeCount = tempDislikes;
+
+  //       setLikeCount(tempLikes);
+  //       setDislikeCount(tempDislikes);
+
+  //       console.log('likeCount: ' + likeCount);
+  //       console.log('dislikeCount: ' + dislikeCount);
+
+  //       setLikeStatus(true);
+  //     });
+
+  //     if (likeStatus == true) {
+  //       setLikeCount(--likeCount);
+  //       // setDislikeCount(--dislikeCount);
+  //       setLikeStatus(false);
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+
+  //   useEffect(() => {
+  //     setLikeCount(likeCount);
+  //     setDislikeCount(dislikeCount);
+  //   }, []);
+  //   return likeCount && dislikeCount;
+  // };
 
   const dispatch = useAppDispatch();
 
@@ -80,6 +132,8 @@ export const VideoDetail = () => {
 
   useEffect(() => {
     dispatch(getEntity(id));
+    fetchDislikes();
+    fetchLikes();
   }, []);
 
   const videoEntity = useAppSelector(state => state.video.entity);
@@ -97,19 +151,16 @@ export const VideoDetail = () => {
       <div className="videoDetailsContainer">
         <p>Description: {videoEntity.description}</p>
         <div id="likeButtonsContainer">
+          <Like function={fetchLikes} className="button" text={'Likes'} icon={'heart'} count={likeCount} conditional={likeButtonClicked} />
+
           <Like
-            function={fetchData}
+            function={fetchDislikes}
             className="button"
-            text={'Likes'}
-            icon={'heart'}
-            count={likeCount}
-            conditional={likeStatus}
-            //  style={{
-            //     backgroundColor: likeStatus ? 'red' : '',
-            //     color: likeStatus ? 'black' : '',
-            //   }}
+            text={'Dislikes'}
+            icon={'trash'}
+            count={dislikeCount}
+            conditional={dislikeButtonClicked}
           />
-          <Like className="button" text={'Dislikes'} icon={'trash'} count={dislikeCount} />
         </div>
       </div>
       <VideoComments />
