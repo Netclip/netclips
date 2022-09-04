@@ -20,11 +20,11 @@ export const VideoDetail = () => {
 
   var [likeButtonClicked, setLikeButtonClicked] = useState(false);
   var [dislikeButtonClicked, setdislikeButtonClicked] = useState(false);
-  // var [vidId, setVidId] = useState(window.location.href.slice(-1));
   var urlStr = window.location.href;
   var n = urlStr.lastIndexOf('/');
   var result = urlStr.substring(n + 1);
   var [vidId, setVidId] = useState(result);
+  // var [vidId, setVidId] = useState(window.location.href.slice(-1));
   // var [likeStatus, setLikeStatus] = useState(false);
 
   const getBearerToken = () => {

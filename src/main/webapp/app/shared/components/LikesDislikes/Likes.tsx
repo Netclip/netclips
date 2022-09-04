@@ -32,7 +32,7 @@ export const Like = props => {
       className="button"
       onClick={props.function}
       style={{
-        backgroundColor: props.conditional ? 'red' : '',
+        backgroundColor: props.conditional ? '#a4dbc4' : '',
         color: props.conditional ? 'black' : '',
       }}
     >
