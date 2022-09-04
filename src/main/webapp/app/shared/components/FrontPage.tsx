@@ -30,7 +30,7 @@ function FrontPage() {
         <h2 className="h2">Videos</h2>
         <div className="recommendedVideos">
           {video.map((video, index) => {
-            console.log(video);
+            // console.log(video);
             return (
               <div key={video.index}>
                 <div className="recommendedVideos__videos">
@@ -41,6 +41,7 @@ function FrontPage() {
                     channelImage="https://i.ytimg.com/vi/gQlMMD8auMs/hqdefault.jpg?sqp=-oaymwEcCOADEI4CSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAZlhO2x8cGFPGbZHh4gS2AUI90DQ"
                     channel="BLACKPINK"
                     image="https://i.ytimg.com/vi/gQlMMD8auMs/hqdefault.jpg?sqp=-oaymwEcCOADEI4CSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAZlhO2x8cGFPGbZHh4gS2AUI90DQ"
+                    link={video.contentRef}
                   />
                 </div>
               </div>
