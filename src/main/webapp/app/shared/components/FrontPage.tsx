@@ -36,8 +36,8 @@ function FrontPage() {
                 <div className="recommendedVideos__videos">
                   <VideoCard
                     title={video.title}
-                    views="11M Views"
-                    timestamp="3 days ago"
+                    views={`${video.likes} likes`}
+                    timestamp={video.uploadDate}
                     channelImage="https://i.ytimg.com/vi/gQlMMD8auMs/hqdefault.jpg?sqp=-oaymwEcCOADEI4CSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAZlhO2x8cGFPGbZHh4gS2AUI90DQ"
                     channel="BLACKPINK"
                     image="https://i.ytimg.com/vi/gQlMMD8auMs/hqdefault.jpg?sqp=-oaymwEcCOADEI4CSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAZlhO2x8cGFPGbZHh4gS2AUI90DQ"
