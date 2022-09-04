@@ -74,7 +74,7 @@ const UploadFiles = () => {
       <label className="btn btn-default">
         <input type="file" onChange={selectFile} />
       </label>
-      <button className="btn btn-success" disabled={!selectedFiles} onClick={upload}>
+      <button className="btn btn-warning" disabled={!selectedFiles} onClick={upload}>
         Upload
       </button>
       {/* <div className="alert alert-light" role="alert">

@@ -15,6 +15,7 @@ import Sidebar from 'app/shared/components/test components/Sidebar';
 import RecommendedVideos from 'app/shared/components/test components/RecommendedVideos';
 import Header from 'app/shared/components/test components/Header';
 import GetVideos from 'app/shared/components/GetVideos';
+import FrontPage from 'app/shared/components/FrontPage';
 
 export const Home = () => {
   const account = useAppSelector(state => state.authentication.account);
@@ -25,7 +26,8 @@ export const Home = () => {
       <div className="hipster">
         <div className="app__page">
           <Sidebar />
-          <RecommendedVideos />
+          {/* <RecommendedVideos /> */}
+          <FrontPage />
         </div>
 
         {/*         <h1>NetClips</h1> */}
