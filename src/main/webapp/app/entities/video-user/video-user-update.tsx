@@ -10,6 +10,8 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { IUser } from 'app/shared/model/user.model';
 import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
+import { IVideo } from 'app/shared/model/video.model';
+import { getEntities as getVideos } from 'app/entities/video/video.reducer';
 import { IVideoUser } from 'app/shared/model/video-user.model';
 import { getEntity, updateEntity, createEntity, reset } from './video-user.reducer';
 
@@ -22,6 +24,7 @@ export const VideoUserUpdate = () => {
   const isNew = id === undefined;
 
   const users = useAppSelector(state => state.userManagement.users);
+  const videos = useAppSelector(state => state.video.entities);
   const videoUserEntity = useAppSelector(state => state.videoUser.entity);
   const loading = useAppSelector(state => state.videoUser.loading);
   const updating = useAppSelector(state => state.videoUser.updating);
@@ -39,6 +42,7 @@ export const VideoUserUpdate = () => {
     }
 
     dispatch(getUsers({}));
+    dispatch(getVideos({}));
   }, []);
 
   useEffect(() => {
@@ -51,6 +55,8 @@ export const VideoUserUpdate = () => {
     const entity = {
       ...videoUserEntity,
       ...values,
+      likedVideos: mapIdList(values.likedVideos),
+      videosDislikeds: mapIdList(values.videosDislikeds),
       internalUser: users.find(it => it.id.toString() === values.internalUser.toString()),
     };
 
@@ -67,6 +73,8 @@ export const VideoUserUpdate = () => {
       : {
           ...videoUserEntity,
           internalUser: videoUserEntity?.internalUser?.id,
+          likedVideos: videoUserEntity?.likedVideos?.map(e => e.id.toString()),
+          videosDislikeds: videoUserEntity?.videosDislikeds?.map(e => e.id.toString()),
         };
 
   return (
@@ -89,6 +97,40 @@ export const VideoUserUpdate = () => {
                 <option value="" key="0" />
                 {users
                   ? users.map(otherEntity => (
+                      <option value={otherEntity.id} key={otherEntity.id}>
+                        {otherEntity.id}
+                      </option>
+                    ))
+                  : null}
+              </ValidatedField>
+              <ValidatedField
+                label="Liked Videos"
+                id="video-user-likedVideos"
+                data-cy="likedVideos"
+                type="select"
+                multiple
+                name="likedVideos"
+              >
+                <option value="" key="0" />
+                {videos
+                  ? videos.map(otherEntity => (
+                      <option value={otherEntity.id} key={otherEntity.id}>
+                        {otherEntity.id}
+                      </option>
+                    ))
+                  : null}
+              </ValidatedField>
+              <ValidatedField
+                label="Videos Disliked"
+                id="video-user-videosDisliked"
+                data-cy="videosDisliked"
+                type="select"
+                multiple
+                name="videosDislikeds"
+              >
+                <option value="" key="0" />
+                {videos
+                  ? videos.map(otherEntity => (
                       <option value={otherEntity.id} key={otherEntity.id}>
                         {otherEntity.id}
                       </option>

@@ -15,6 +15,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
@@ -46,7 +49,6 @@ public class CommentResource {
     private final CommentService commentService;
 
     private final CommentRepository commentRepository;
-
     private final VideoRepository videoRepository;
 
     private final VideoService videoService;
@@ -145,7 +147,7 @@ public class CommentResource {
      * or with status {@code 400 (Bad Request)} if the comment is not valid,
      * or with status {@code 500 (Internal Server Error)} if the comment couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
-     **/
+     */
     @PutMapping("/comments/{id}")
     public ResponseEntity<Comment> updateComment(
         @PathVariable(value = "id", required = false) final Long commentId,

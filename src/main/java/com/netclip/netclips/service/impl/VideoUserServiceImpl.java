@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,6 +59,10 @@ public class VideoUserServiceImpl implements VideoUserService {
     public List<VideoUser> findAll() {
         log.debug("Request to get all VideoUsers");
         return videoUserRepository.findAll();
+    }
+
+    public Page<VideoUser> findAllWithEagerRelationships(Pageable pageable) {
+        return videoUserRepository.findAllWithEagerRelationships(pageable);
     }
 
     @Override

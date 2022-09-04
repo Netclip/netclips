@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -31,17 +30,34 @@ public class VideoUser implements Serializable {
     @OneToMany(mappedBy = "videoUser")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "videoUser", "video" }, allowSetters = true)
-    //@NotNull
     private Set<Comment> comments = new HashSet<>();
 
     @OneToMany(mappedBy = "uploader")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "comments", "uploader" }, allowSetters = true)
-    //@NotNull
     private Set<Video> videos = new HashSet<>();
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
+    @ManyToMany
+    @JoinTable(
+        name = "rel_video_user__liked_videos",
+        joinColumns = @JoinColumn(name = "video_user_id"),
+        inverseJoinColumns = @JoinColumn(name = "liked_videos_id")
+    )
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "comments", "uploader" }, allowSetters = true)
+    private Set<Video> likedVideos = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(
+        name = "rel_video_user__videos_disliked",
+        joinColumns = @JoinColumn(name = "video_user_id"),
+        inverseJoinColumns = @JoinColumn(name = "videos_disliked_id")
+    )
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "comments", "uploader" }, allowSetters = true)
+    private Set<Video> videosDislikeds = new HashSet<>();
+
+    // jhipster-needle-entity-add-field - JHipster will add fields here
     public VideoUser(User user) {
         this.id = user.getId();
         this.internalUser = user;
@@ -134,6 +150,52 @@ public class VideoUser implements Serializable {
     public VideoUser removeVideos(Video video) {
         this.videos.remove(video);
         video.setUploader(null);
+        return this;
+    }
+
+    public Set<Video> getLikedVideos() {
+        return this.likedVideos;
+    }
+
+    public void setLikedVideos(Set<Video> videos) {
+        this.likedVideos = videos;
+    }
+
+    public VideoUser likedVideos(Set<Video> videos) {
+        this.setLikedVideos(videos);
+        return this;
+    }
+
+    public VideoUser addLikedVideos(Video video) {
+        this.likedVideos.add(video);
+        return this;
+    }
+
+    public VideoUser removeLikedVideos(Video video) {
+        this.likedVideos.remove(video);
+        return this;
+    }
+
+    public Set<Video> getVideosDislikeds() {
+        return this.videosDislikeds;
+    }
+
+    public void setVideosDislikeds(Set<Video> videos) {
+        this.videosDislikeds = videos;
+    }
+
+    public VideoUser videosDislikeds(Set<Video> videos) {
+        this.setVideosDislikeds(videos);
+        return this;
+    }
+
+    public VideoUser addVideosDisliked(Video video) {
+        this.videosDislikeds.add(video);
+        return this;
+    }
+
+    public VideoUser removeVideosDisliked(Video video) {
+        this.videosDislikeds.remove(video);
         return this;
     }
 

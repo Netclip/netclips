@@ -4,6 +4,8 @@ import com.netclip.netclips.domain.Video;
 import com.netclip.netclips.domain.VideoUser;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * Service Interface for managing {@link VideoUser}.
@@ -39,6 +41,14 @@ public interface VideoUserService {
      * @return the list of entities.
      */
     List<VideoUser> findAll();
+
+    /**
+     * Get all the videoUsers with eager load of many-to-many relationships.
+     *
+     * @param pageable the pagination information.
+     * @return the list of entities.
+     */
+    Page<VideoUser> findAllWithEagerRelationships(Pageable pageable);
 
     /**
      * Get the "id" videoUser.
