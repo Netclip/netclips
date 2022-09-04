@@ -56,7 +56,7 @@ export const VideoUserUpdate = () => {
       ...videoUserEntity,
       ...values,
       likedVideos: mapIdList(values.likedVideos),
-      videosDislikeds: mapIdList(values.videosDislikeds),
+      videosDisliked: mapIdList(values.videosDisliked),
       internalUser: users.find(it => it.id.toString() === values.internalUser.toString()),
     };
 
@@ -74,7 +74,7 @@ export const VideoUserUpdate = () => {
           ...videoUserEntity,
           internalUser: videoUserEntity?.internalUser?.id,
           likedVideos: videoUserEntity?.likedVideos?.map(e => e.id.toString()),
-          videosDislikeds: videoUserEntity?.videosDislikeds?.map(e => e.id.toString()),
+          videosDisliked: videoUserEntity?.videosDisliked?.map(e => e.id.toString()),
         };
 
   return (
@@ -126,7 +126,7 @@ export const VideoUserUpdate = () => {
                 data-cy="videosDisliked"
                 type="select"
                 multiple
-                name="videosDislikeds"
+                name="videosDisliked"
               >
                 <option value="" key="0" />
                 {videos

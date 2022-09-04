@@ -64,7 +64,7 @@ public class VideoUserRepositoryWithBagRelationshipsImpl implements VideoUserRep
     VideoUser fetchVideosDislikeds(VideoUser result) {
         return entityManager
             .createQuery(
-                "select videoUser from VideoUser videoUser left join fetch videoUser.videosDislikeds where videoUser is :videoUser",
+                "select videoUser from VideoUser videoUser left join fetch videoUser.videosDisliked where videoUser is :videoUser",
                 VideoUser.class
             )
             .setParameter("videoUser", result)
@@ -77,7 +77,7 @@ public class VideoUserRepositoryWithBagRelationshipsImpl implements VideoUserRep
         IntStream.range(0, videoUsers.size()).forEach(index -> order.put(videoUsers.get(index).getId(), index));
         List<VideoUser> result = entityManager
             .createQuery(
-                "select distinct videoUser from VideoUser videoUser left join fetch videoUser.videosDislikeds where videoUser in :videoUsers",
+                "select distinct videoUser from VideoUser videoUser left join fetch videoUser.videosDisliked where videoUser in :videoUsers",
                 VideoUser.class
             )
             .setParameter("videoUsers", videoUsers)

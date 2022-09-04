@@ -43,11 +43,11 @@ export const VideoUserDetail = () => {
           </dd>
           <dt>Videos Disliked</dt>
           <dd>
-            {videoUserEntity.videosDislikeds
-              ? videoUserEntity.videosDislikeds.map((val, i) => (
+            {videoUserEntity.videosDisliked
+              ? videoUserEntity.videosDisliked.map((val, i) => (
                   <span key={val.id}>
                     <a>{val.id}</a>
-                    {videoUserEntity.videosDislikeds && i === videoUserEntity.videosDislikeds.length - 1 ? '' : ', '}
+                    {videoUserEntity.videosDisliked && i === videoUserEntity.videosDisliked.length - 1 ? '' : ', '}
                   </span>
                 ))
               : null}

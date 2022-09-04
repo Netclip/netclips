@@ -73,11 +73,11 @@ export const VideoUser = () => {
                       : null}
                   </td>
                   <td>
-                    {videoUser.videosDislikeds
-                      ? videoUser.videosDislikeds.map((val, j) => (
+                    {videoUser.videosDisliked
+                      ? videoUser.videosDisliked.map((val, j) => (
                           <span key={j}>
                             <Link to={`/video/${val.id}`}>{val.id}</Link>
-                            {j === videoUser.videosDislikeds.length - 1 ? '' : ', '}
+                            {j === videoUser.videosDisliked.length - 1 ? '' : ', '}
                           </span>
                         ))
                       : null}

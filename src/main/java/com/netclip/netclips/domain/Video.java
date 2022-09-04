@@ -48,7 +48,7 @@ public class Video implements Serializable {
     private Set<Comment> comments = new HashSet<>();
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "internalUser", "comments", "videos", "likedVideos", "videosDislikeds" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "internalUser", "comments", "videos", "likedVideos", "videosDisliked" }, allowSetters = true)
     private VideoUser uploader;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

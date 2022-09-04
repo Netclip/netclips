@@ -55,7 +55,7 @@ public class VideoUser implements Serializable {
     )
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "comments", "uploader" }, allowSetters = true)
-    private Set<Video> videosDislikeds = new HashSet<>();
+    private Set<Video> videosDisliked = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public VideoUser(User user) {
@@ -176,26 +176,26 @@ public class VideoUser implements Serializable {
         return this;
     }
 
-    public Set<Video> getVideosDislikeds() {
-        return this.videosDislikeds;
+    public Set<Video> getVideosDisliked() {
+        return this.videosDisliked;
     }
 
-    public void setVideosDislikeds(Set<Video> videos) {
-        this.videosDislikeds = videos;
+    public void setVideosDisliked(Set<Video> videos) {
+        this.videosDisliked = videos;
     }
 
-    public VideoUser videosDislikeds(Set<Video> videos) {
-        this.setVideosDislikeds(videos);
+    public VideoUser videosDisliked(Set<Video> videos) {
+        this.setVideosDisliked(videos);
         return this;
     }
 
     public VideoUser addVideosDisliked(Video video) {
-        this.videosDislikeds.add(video);
+        this.videosDisliked.add(video);
         return this;
     }
 
     public VideoUser removeVideosDisliked(Video video) {
-        this.videosDislikeds.remove(video);
+        this.videosDisliked.remove(video);
         return this;
     }
 
