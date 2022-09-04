@@ -1,11 +1,10 @@
 import React, { Component, useState, useEffect, Fragment } from 'react';
 import axios from 'axios';
-import './frontPage.scss';
 import VideoCard from './test components/VideoCard';
 
+import '../components/test components/recommendedVideos.scss';
+
 const API_URL = '/api/';
-const VIDEO_USER = 'api/videos/fetch-play-video/';
-const id = 20;
 
 function FrontPage() {
   const [video, setVideo] = useState([]);
@@ -27,7 +26,7 @@ function FrontPage() {
 
   return (
     <Fragment>
-      <section>
+      <div>
         <h2 className="h2">Videos</h2>
         <div className="recommendedVideos">
           {video.map((video, index) => {
@@ -48,7 +47,7 @@ function FrontPage() {
             );
           })}
         </div>
-      </section>
+      </div>
     </Fragment>
   );
 }
