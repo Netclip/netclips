@@ -68,11 +68,10 @@ Navbar styles
     width: auto;
     display: inline-block;
     img {
-      background-color: orange;
-      // height: 80px;
+      background-color: red;
       height: auto;
-      width: 7rem;
-      margin-top: -20px;
+      width: 7.5rem;
+      margin-top: -30px;
     }
   }
 }
@@ -80,9 +79,9 @@ Navbar styles
 .brand-title {
   font-stretch: extra-expanded;
   font-size: 50px;
-  color: rgb(246, 163, 8);
+  color: red;
   &:hover {
-    color: blue;
+    color: whitesmoke;
     text-decoration: none;
   }
 }
