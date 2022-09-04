@@ -72,9 +72,15 @@ public class VideoUserServiceImpl implements VideoUserService {
         videoUserRepository.deleteById(id);
     }
 
+    @Override
     public VideoUser deleteVideoFromSet(VideoUser videoUser, Video video) {
         Set<Video> ownedVideos = videoUser.getVideos();
         ownedVideos.remove(video);
         return videoUser;
+    }
+
+    @Override
+    public Optional<VideoUser> findByUserLogin(String login) {
+        return videoUserRepository.findByInternalUser_Login(login);
     }
 }

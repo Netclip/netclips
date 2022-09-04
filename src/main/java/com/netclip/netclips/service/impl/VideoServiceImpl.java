@@ -1,9 +1,11 @@
 package com.netclip.netclips.service.impl;
 
+import com.netclip.netclips.domain.Comment;
 import com.netclip.netclips.domain.Video;
 import com.netclip.netclips.repository.VideoRepository;
 import com.netclip.netclips.service.VideoService;
 import java.util.Optional;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,15 @@ public class VideoServiceImpl implements VideoService {
 
     public VideoServiceImpl(VideoRepository videoRepository) {
         this.videoRepository = videoRepository;
+    }
+
+    public Video updateVideoComment(Comment comment, Video video) {
+        Set<Comment> comments = video.getComments();
+        comments.remove(comment);
+        comments.add(comment);
+        video.setComments(comments);
+        this.update(video);
+        return video;
     }
 
     @Override

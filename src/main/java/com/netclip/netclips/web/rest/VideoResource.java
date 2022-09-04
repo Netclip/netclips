@@ -130,8 +130,8 @@ public class VideoResource {
 
     @DeleteMapping(value = "/videos/delete")
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-    public ResponseEntity<String> deleteVideo(@RequestParam Long id, Authentication auth) {
-        Optional<Video> videoRes = videoRepository.findById(id);
+    public ResponseEntity<String> deleteVideo(@RequestParam Long videoId, Authentication auth) {
+        Optional<Video> videoRes = videoRepository.findById(videoId);
         Optional<VideoUser> videoUser = videoUserRepository.findByInternalUser_Login(auth.getName());
         if (videoUser.isEmpty() || videoRes.isEmpty()) {
             return new ResponseEntity<>("Invalid video response", HttpStatus.BAD_REQUEST);
@@ -142,13 +142,10 @@ public class VideoResource {
         Video video = videoRes.get();
         VideoUser user = videoUser.get();
 
-        String[] pathSplit = video.getContentRef().split("/");
-        String fileName = pathSplit[pathSplit.length - 1];
-
-        s3Service.deleteFile(fileName);
+        s3Service.deleteFileByFullKey(video.getContentRef());
         videoService.delete(video.getId());
-        videoUserService.deleteVideoFromSet(user, video);
-        videoUserRepository.save(user);
+        VideoUser updatedUser = videoUserService.deleteVideoFromSet(user, video);
+        videoUserRepository.save(updatedUser);
 
         return new ResponseEntity<>(video.toString(), HttpStatus.OK);
     }
