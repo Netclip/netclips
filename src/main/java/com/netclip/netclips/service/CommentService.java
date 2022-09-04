@@ -1,6 +1,7 @@
 package com.netclip.netclips.service;
 
 import com.netclip.netclips.domain.Comment;
+import com.netclip.netclips.service.dto.CommentDTO;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,8 @@ public interface CommentService {
     Comment save(Comment comment);
 
     List<Comment> getAllByVideo(Long videoId, int pageNo, int pageSize, String sortBy);
+
+    CommentDTO CommentToCommentDTO(Comment comment);
 
     /**
      * Updates a comment.

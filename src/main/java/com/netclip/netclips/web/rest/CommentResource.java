@@ -9,11 +9,14 @@ import com.netclip.netclips.repository.VideoRepository;
 import com.netclip.netclips.service.CommentService;
 import com.netclip.netclips.service.VideoService;
 import com.netclip.netclips.service.VideoUserService;
+import com.netclip.netclips.service.dto.CommentDTO;
 import com.netclip.netclips.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -121,15 +124,16 @@ public class CommentResource {
     }
 
     @GetMapping("/comments/video")
-    public ResponseEntity<List<Comment>> getCommentsById(
+    public ResponseEntity<List<CommentDTO>> getCommentsById(
         @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
         @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
         @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
         @RequestParam(name = "video_id") Long id
     ) {
         List<Comment> res = commentService.getAllByVideo(id, pageNo, pageSize, sortBy);
+        List<CommentDTO> comments = res.stream().map(commentService::CommentToCommentDTO).collect(Collectors.toList());
 
-        return ResponseEntity.ok(res);
+        return ResponseEntity.ok(comments);
     }
 
     /**

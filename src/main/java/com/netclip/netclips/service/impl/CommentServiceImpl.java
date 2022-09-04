@@ -3,6 +3,8 @@ package com.netclip.netclips.service.impl;
 import com.netclip.netclips.domain.Comment;
 import com.netclip.netclips.repository.CommentRepository;
 import com.netclip.netclips.service.CommentService;
+import com.netclip.netclips.service.dto.CommentDTO;
+import com.netclip.netclips.service.mapper.CommentMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,14 +28,22 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
 
-    public CommentServiceImpl(CommentRepository commentRepository) {
+    private final CommentMapper commentMapper;
+
+    public CommentServiceImpl(CommentRepository commentRepository, CommentMapper commentMapper) {
         this.commentRepository = commentRepository;
+        this.commentMapper = commentMapper;
     }
 
     @Override
     public Comment save(Comment comment) {
         log.debug("Request to save Comment : {}", comment);
         return commentRepository.save(comment);
+    }
+
+    @Override
+    public CommentDTO CommentToCommentDTO(Comment comment) {
+        return commentMapper.CommentToDTO(comment);
     }
 
     @Override
