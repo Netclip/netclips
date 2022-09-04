@@ -44,6 +44,8 @@ public class Comment implements Serializable {
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
+    public Comment() {}
+
     public Long getId() {
         return this.id;
     }
