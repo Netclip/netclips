@@ -8,6 +8,7 @@ import VideoUser from './video-user';
 import Comment from './comment';
 import UserVideoPage from 'app/shared/components/UserVideoPage';
 import Sidebar from 'app/shared/components/test components/Sidebar';
+import { Breakpoint, BreakpointProvider } from 'react-socks';
 /* jhipster-needle-add-route-import - JHipster will add routes here */
 
 export default () => {
@@ -19,9 +20,16 @@ export default () => {
         <Route
           path="userVideo/*"
           element={
-            <div className="app__page">
-              <Sidebar /> <UserVideoPage />
-            </div>
+            <>
+              <BreakpointProvider>
+                <div>
+                  <div className="app__page">
+                    <Sidebar />
+                    <UserVideoPage />
+                  </div>
+                </div>
+              </BreakpointProvider>
+            </>
           }
         />
         <Route path="video-user/*" element={<VideoUser />} />

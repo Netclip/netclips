@@ -11,41 +11,41 @@ body {
   display: flex;
 }
 
-a {
-  color: #533f03;
-  font-weight: bold;
-}
+// a {
+//   color: #533f03;
+//   font-weight: bold;
+// }
 
-* {
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  &:after,
-  &::before {
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-  }
-}
+// * {
+//   -moz-box-sizing: border-box;
+//   box-sizing: border-box;
+//   &:after,
+//   &::before {
+//     -moz-box-sizing: border-box;
+//     box-sizing: border-box;
+//   }
+// }
 
-.app-container {
-  box-sizing: border-box;
-  background-color: lightgray;
-  .view-container {
-    width: 100%;
-    height: calc(100% - 40px);
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding: 1rem;
-    .card {
-      padding: 1rem;
-    }
-    .view-routes {
-      height: 100%;
-      > div {
-        height: 100%;
-      }
-    }
-  }
-}
+// .app-container {
+//   box-sizing: border-box;
+//   background-color: lightgray;
+//   .view-container {
+//     width: 100%;
+//     height: calc(100% - 40px);
+//     overflow-y: auto;
+//     overflow-x: hidden;
+//     padding: 1rem;
+//     .card {
+//       padding: 1rem;
+//     }
+//     .view-routes {
+//       height: 100%;
+//       > div {
+//         height: 100%;
+//       }
+//     }
+//   }
+// }
 
 .fullscreen {
   position: fixed;
