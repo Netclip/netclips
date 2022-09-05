@@ -16,22 +16,25 @@ import RecommendedVideos from 'app/shared/components/test components/Recommended
 import Header from 'app/shared/components/test components/Header';
 import GetVideos from 'app/shared/components/GetVideos';
 import FrontPage from 'app/shared/components/FrontPage';
+import { Breakpoint, BreakpointProvider } from 'react-socks';
 
 export const Home = () => {
   const account = useAppSelector(state => state.authentication.account);
 
   return (
     <>
-      <SearchBar />
-      <div className="hipster">
-        <div className="app__page">
-          <Sidebar />
-          {/* <RecommendedVideos /> */}
-          <FrontPage />
-        </div>
+      <BreakpointProvider>
+        <SearchBar />
+        <div className="hipster">
+          <div className="app__page">
+            <Sidebar />
+            {/* <RecommendedVideos /> */}
+            <FrontPage />
+          </div>
 
-        {/*         <h1>NetClips</h1> */}
-      </div>
+          {/*         <h1>NetClips</h1> */}
+        </div>
+      </BreakpointProvider>
     </>
   );
 };
