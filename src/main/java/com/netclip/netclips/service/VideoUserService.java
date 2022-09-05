@@ -60,6 +60,10 @@ public interface VideoUserService {
 
     VideoUser deleteVideoFromSet(VideoUser videoUser, Video video);
 
+    VideoUser removeLikedVideo(VideoUser videoUser, Video video);
+
+    VideoUser removeDislikedVideo(VideoUser videoUser, Video video);
+
     Optional<VideoUser> findByUserLogin(String login);
 
     /**

@@ -161,21 +161,28 @@ public class VideoResource {
      */
     @DeleteMapping(value = "/videos/delete")
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-    public ResponseEntity<String> deleteVideo(@RequestParam Long videoId, Authentication auth) {
+    public ResponseEntity<String> deleteVideo(@RequestParam(name = "video_id") Long videoId, Authentication auth) {
         Optional<Video> videoRes = videoRepository.findById(videoId);
-        Optional<VideoUser> videoUser = videoUserRepository.findByInternalUser_Login(auth.getName());
-        if (videoUser.isEmpty() || videoRes.isEmpty()) {
+        Optional<VideoUser> videoUserRes = videoUserRepository.findByInternalUser_Login(auth.getName());
+        if (videoUserRes.isEmpty() || videoRes.isEmpty()) {
             return new ResponseEntity<>("Invalid video response", HttpStatus.NO_CONTENT);
         }
-        if (!videoRes.get().getUploader().getInternalUser().getLogin().equals(auth.getName())) {
+        User user = videoUserRes.get().getInternalUser();
+        Set<String> userRoles = user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toSet());
+        if ((!userRoles.contains(AuthoritiesConstants.ADMIN) && (!user.getLogin().equals(auth.getName())))) {
             return new ResponseEntity<>("You must be the video uploader or have admin privileges", HttpStatus.UNAUTHORIZED);
         }
+
         Video video = videoRes.get();
-        VideoUser user = videoUser.get();
+        VideoUser vidUser = videoUserRes.get();
         s3Service.deleteFileByFullKey(video.getContentRef());
+        vidUser = videoUserService.deleteVideoFromSet(vidUser, video);
+        vidUser = videoUserService.removeDislikedVideo(vidUser, video);
+        vidUser = videoUserService.removeLikedVideo(vidUser, video);
+        videoUserRepository.save(vidUser);
+
         videoService.delete(video.getId());
-        VideoUser updatedUser = videoUserService.deleteVideoFromSet(user, video);
-        videoUserRepository.save(updatedUser);
+
         return new ResponseEntity<>(video.toString(), HttpStatus.OK);
     }
 

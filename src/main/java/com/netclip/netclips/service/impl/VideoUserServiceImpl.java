@@ -82,6 +82,23 @@ public class VideoUserServiceImpl implements VideoUserService {
     public VideoUser deleteVideoFromSet(VideoUser videoUser, Video video) {
         Set<Video> ownedVideos = videoUser.getVideos();
         ownedVideos.remove(video);
+        videoUser.setVideos(ownedVideos);
+        return videoUser;
+    }
+
+    @Override
+    public VideoUser removeLikedVideo(VideoUser videoUser, Video video) {
+        Set<Video> likedVideos = videoUser.getLikedVideos();
+        likedVideos.remove(video);
+        videoUser.setVideos(likedVideos);
+        return videoUser;
+    }
+
+    @Override
+    public VideoUser removeDislikedVideo(VideoUser videoUser, Video video) {
+        Set<Video> dislikedVideos = videoUser.getVideosDisliked();
+        dislikedVideos.remove(video);
+        videoUser.setVideosDisliked(dislikedVideos);
         return videoUser;
     }
 
