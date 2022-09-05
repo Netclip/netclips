@@ -1,8 +1,10 @@
 package com.netclip.netclips.service.impl;
 
 import com.netclip.netclips.domain.Comment;
+import com.netclip.netclips.domain.User;
 import com.netclip.netclips.domain.Video;
 import com.netclip.netclips.repository.VideoRepository;
+import com.netclip.netclips.service.S3Service;
 import com.netclip.netclips.service.VideoService;
 import com.netclip.netclips.service.dto.VideoPreviewDTO;
 import com.netclip.netclips.service.mapper.VideoMapper;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Service Implementation for managing {@link Video}.
@@ -30,9 +33,12 @@ public class VideoServiceImpl implements VideoService {
 
     private final VideoMapper videoMapper;
 
-    public VideoServiceImpl(VideoRepository videoRepository, VideoMapper videoMapper) {
+    private final S3Service s3Service;
+
+    public VideoServiceImpl(VideoRepository videoRepository, VideoMapper videoMapper, S3Service s3Service) {
         this.videoRepository = videoRepository;
         this.videoMapper = videoMapper;
+        this.s3Service = s3Service;
     }
 
     public Video updateVideoComment(Comment comment, Video video) {
@@ -41,6 +47,16 @@ public class VideoServiceImpl implements VideoService {
         comments.add(comment);
         video.setComments(comments);
         this.update(video);
+        return video;
+    }
+
+    @Override
+    @Transactional
+    public Video uploadThumbnail(Video video, MultipartFile file) {
+        String thumbnailKey = s3Service.uploadFile(file, s3Service.generateThumbnailName(file));
+        video.setThumbnailRef(thumbnailKey);
+
+        videoRepository.save(video);
         return video;
     }
 

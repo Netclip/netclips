@@ -1,6 +1,7 @@
 package com.netclip.netclips.web.rest;
 
 import com.amazonaws.Response;
+import com.netclip.netclips.domain.Authority;
 import com.netclip.netclips.domain.User;
 import com.netclip.netclips.domain.Video;
 import com.netclip.netclips.domain.VideoUser;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +92,35 @@ public class VideoResource {
     //    public ResponseEntity<String> testPrincipal(Authentication authentication) {
     //        return new ResponseEntity<>(authentication.toString(), HttpStatus.OK);
     //    }
+
+    @PostMapping("videos/thumbnail")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    @Transactional
+    public ResponseEntity<VideoPreviewDTO> uploadThumbnail(
+        @RequestPart(name = "file") MultipartFile file,
+        @RequestParam(name = "video_id") Long videoId,
+        Authentication auth
+    ) {
+        Optional<VideoUser> userRes = videoUserService.findByUserLogin(auth.getName());
+        Optional<Video> videoRes = videoService.findOne(videoId);
+        if (userRes.isEmpty()) {
+            throw new BadRequestAlertException("User not found", ENTITY_NAME, "idnotfound");
+        }
+        if (videoRes.isEmpty()) {
+            throw new BadRequestAlertException("Video not found", ENTITY_NAME, "idnotfound");
+        }
+        VideoUser user = userRes.get();
+        Set<String> userRoles = user.getInternalUser().getAuthorities().stream().map(Authority::getName).collect(Collectors.toSet());
+        if ((!userRoles.contains(AuthoritiesConstants.ADMIN) && (!user.getInternalUser().getLogin().equals(auth.getName())))) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        s3Service.deleteFileByFullKey(videoRes.get().getThumbnailRef());
+        Video updatedVid = videoService.uploadThumbnail(videoRes.get(), file);
+        VideoPreviewDTO vidDTO = new VideoPreviewDTO(updatedVid);
+
+        return ResponseEntity.ok(vidDTO);
+    }
+
     @PostMapping("/videos/upload")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -104,7 +135,7 @@ public class VideoResource {
             if (vidUser.isEmpty() || !vidUser.get().getInternalUser().isActivated()) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
-            String fileRef = s3Service.uploadFile(file);
+            String fileRef = s3Service.uploadFile(file, s3Service.generateUniqueFileName(file));
             UploadDTO upDTO = new UploadDTO.UploadDTOBuilder()
                 .userId(vidUser.get().getId())
                 .userLogin(vidUser.get().getInternalUser().getLogin())
