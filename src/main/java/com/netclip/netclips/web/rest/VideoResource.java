@@ -356,4 +356,16 @@ public class VideoResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
+
+    @PostMapping("/videos/like")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    @Transactional
+    public ResponseEntity<VideoDTO> likeVideo(@RequestParam(name = "id") Long id, Authentication auth) {
+        Optional<Video> videoRes = videoService.findOne(id);
+        Optional<VideoUser> userRes = videoUserService.findByUserLogin(auth.getName());
+        if (videoRes.isEmpty()) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+        return new ResponseEntity<>(videoService.likeVideo(videoRes.get(), userRes.get()), HttpStatus.OK);
+    }
 }

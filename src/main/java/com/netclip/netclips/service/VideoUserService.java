@@ -60,6 +60,14 @@ public interface VideoUserService {
 
     VideoUser deleteVideoFromSet(VideoUser videoUser, Video video);
 
+    VideoUser addLikedVideo(VideoUser videoUser, Video video);
+
+    VideoUser addDislikedVideo(VideoUser videoUser, Video video);
+
+    boolean isLikedVideo(VideoUser videoUser, Video video);
+
+    boolean isDislikedVideo(VideoUser videoUser, Video video);
+
     VideoUser removeLikedVideo(VideoUser videoUser, Video video);
 
     VideoUser removeDislikedVideo(VideoUser videoUser, Video video);

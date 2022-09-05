@@ -87,6 +87,34 @@ public class VideoUserServiceImpl implements VideoUserService {
     }
 
     @Override
+    public VideoUser addLikedVideo(VideoUser videoUser, Video video) {
+        Set<Video> likedVideos = videoUser.getLikedVideos();
+        likedVideos.add(video);
+        videoUser.setLikedVideos(likedVideos);
+        videoUserRepository.save(videoUser);
+        return videoUser;
+    }
+
+    @Override
+    public VideoUser addDislikedVideo(VideoUser videoUser, Video video) {
+        Set<Video> dislikedVideos = videoUser.getVideosDisliked();
+        dislikedVideos.add(video);
+        videoUser.setLikedVideos(dislikedVideos);
+        videoUserRepository.save(videoUser);
+        return videoUser;
+    }
+
+    @Override
+    public boolean isLikedVideo(VideoUser videoUser, Video video) {
+        return videoUser.getLikedVideos().contains(video);
+    }
+
+    @Override
+    public boolean isDislikedVideo(VideoUser videoUser, Video video) {
+        return videoUser.getVideosDisliked().contains(video);
+    }
+
+    @Override
     public VideoUser removeLikedVideo(VideoUser videoUser, Video video) {
         Set<Video> likedVideos = videoUser.getLikedVideos();
         likedVideos.remove(video);
