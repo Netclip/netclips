@@ -5,13 +5,14 @@ import VideoPlayer from './VideoPlayer';
 
 const API_URL = '/api/s3';
 const VIDEO_USER = 'api/videos/fetch-play-video/';
-const id = 33;
 
-function GetVideos() {
-  const [video, setVideo] = useState([]);
+function GetVideos(props) {
+  const id = props.id;
+
+  const [video, setVideo] = useState();
   const axios = require('axios');
 
-  const getAllVideos = async () => {
+  const getVideos = async () => {
     try {
       const response = await axios.get(`${VIDEO_USER}${id}`);
       console.log(response.data.preSignedUrl);
@@ -22,7 +23,7 @@ function GetVideos() {
   };
 
   useEffect(() => {
-    getAllVideos();
+    getVideos();
   }, []);
 
   // GetVideos();

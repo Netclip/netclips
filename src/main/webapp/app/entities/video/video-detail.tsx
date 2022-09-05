@@ -139,14 +139,10 @@ export const VideoDetail = () => {
   const videoEntity = useAppSelector(state => state.video.entity);
   return (
     <div className="videoPgContainer">
-      <div id="uploaderContainer">
-        <sub id="uploaderText">Video Uploader: {videoEntity.uploader}</sub>
-      </div>
+      <div id="uploaderContainer">{/* <sub id="uploaderText">Video Uploader: {videoEntity.uploader}</sub> */}</div>
 
       <h1>{videoEntity.title}</h1>
-      <div>
-        <GetVideos />
-      </div>
+      <div>{<GetVideos id={id} />}</div>
 
       <div className="videoDetailsContainer">
         <p>Description: {videoEntity.description}</p>
