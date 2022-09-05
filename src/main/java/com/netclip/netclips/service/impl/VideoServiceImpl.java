@@ -163,14 +163,11 @@ public class VideoServiceImpl implements VideoService {
     public VideoDTO likeVideo(Video video, VideoUser user) {
         Long vidId = video.getId();
         if (videoUserService.isLikedVideo(user, video)) {
-            video.setLikes(video.getLikes() - 1);
             videoRepository.decrementLikes(vidId);
             videoUserService.removeLikedVideo(user, video);
         } else if (videoUserService.isDislikedVideo(user, video)) {
-            video.setDislikes(video.getDislikes() - 1);
             videoRepository.decrementDislikes(vidId);
             videoUserService.removeDislikedVideo(user, video);
-            video.setLikes(video.getLikes() + 1);
             videoRepository.incrementLikes(vidId);
             videoUserService.addLikedVideo(user, video);
         } else {
@@ -184,14 +181,11 @@ public class VideoServiceImpl implements VideoService {
     public VideoDTO dislikeVideo(Video video, VideoUser user) {
         Long vidId = video.getId();
         if (videoUserService.isDislikedVideo(user, video)) {
-            video.setDislikes(video.getDislikes() - 1);
             videoRepository.decrementDislikes(vidId);
             videoUserService.removeDislikedVideo(user, video);
         } else if (videoUserService.isLikedVideo(user, video)) {
-            video.setLikes(video.getLikes() - 1);
             videoRepository.decrementLikes(vidId);
             videoUserService.removeLikedVideo(user, video);
-            video.setLikes(video.getDislikes() + 1);
             videoRepository.incrementDislikes(vidId);
             videoUserService.addDislikedVideo(user, video);
         } else {

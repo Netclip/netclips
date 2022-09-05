@@ -82,7 +82,6 @@ public class VideoUserServiceImpl implements VideoUserService {
     public VideoUser deleteVideoFromSet(VideoUser videoUser, Video video) {
         Set<Video> ownedVideos = videoUser.getVideos();
         ownedVideos.remove(video);
-        videoUser.setVideos(ownedVideos);
         return videoUser;
     }
 
@@ -90,7 +89,6 @@ public class VideoUserServiceImpl implements VideoUserService {
     public VideoUser addLikedVideo(VideoUser videoUser, Video video) {
         Set<Video> likedVideos = videoUser.getLikedVideos();
         likedVideos.add(video);
-        videoUser.setLikedVideos(likedVideos);
         videoUserRepository.save(videoUser);
         return videoUser;
     }
@@ -99,7 +97,6 @@ public class VideoUserServiceImpl implements VideoUserService {
     public VideoUser addDislikedVideo(VideoUser videoUser, Video video) {
         Set<Video> dislikedVideos = videoUser.getVideosDisliked();
         dislikedVideos.add(video);
-        videoUser.setLikedVideos(dislikedVideos);
         videoUserRepository.save(videoUser);
         return videoUser;
     }
@@ -118,7 +115,7 @@ public class VideoUserServiceImpl implements VideoUserService {
     public VideoUser removeLikedVideo(VideoUser videoUser, Video video) {
         Set<Video> likedVideos = videoUser.getLikedVideos();
         likedVideos.remove(video);
-        videoUser.setVideos(likedVideos);
+        videoUserRepository.save(videoUser);
         return videoUser;
     }
 
@@ -126,7 +123,7 @@ public class VideoUserServiceImpl implements VideoUserService {
     public VideoUser removeDislikedVideo(VideoUser videoUser, Video video) {
         Set<Video> dislikedVideos = videoUser.getVideosDisliked();
         dislikedVideos.remove(video);
-        videoUser.setVideosDisliked(dislikedVideos);
+        videoUserRepository.save(videoUser);
         return videoUser;
     }
 

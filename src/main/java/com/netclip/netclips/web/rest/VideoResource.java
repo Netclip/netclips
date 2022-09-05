@@ -357,7 +357,7 @@ public class VideoResource {
             .build();
     }
 
-    @PostMapping("/videos/like")
+    @PutMapping("/video/like")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
     @Transactional
     public ResponseEntity<VideoDTO> likeVideo(@RequestParam(name = "id") Long id, Authentication auth) {
@@ -367,5 +367,17 @@ public class VideoResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
         return new ResponseEntity<>(videoService.likeVideo(videoRes.get(), userRes.get()), HttpStatus.OK);
+    }
+
+    @PutMapping("/video/dislike")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    @Transactional
+    public ResponseEntity<VideoDTO> dislikeVideo(@RequestParam(name = "id") Long id, Authentication auth) {
+        Optional<Video> videoRes = videoService.findOne(id);
+        Optional<VideoUser> userRes = videoUserService.findByUserLogin(auth.getName());
+        if (videoRes.isEmpty()) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+        return new ResponseEntity<>(videoService.dislikeVideo(videoRes.get(), userRes.get()), HttpStatus.OK);
     }
 }
