@@ -67,6 +67,8 @@ public interface VideoService {
 
     Page<VideoPreviewDTO> getVideoPreviews(int pageNo, int pageSize, String sortBy);
 
+    VideoPreviewDTO videoToPreviewDTOWithPresignedThumbnail(Video video);
+
     /**
      * Delete the "id" video.
      *

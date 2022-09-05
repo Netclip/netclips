@@ -137,10 +137,17 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
+    public VideoPreviewDTO videoToPreviewDTOWithPresignedThumbnail(Video video) {
+        VideoPreviewDTO res = videoMapper.videoToPreviewDTO(video);
+        res.setThumbnailRef(s3Service.generatePresignedUrl(video.getThumbnailRef()));
+        return res;
+    }
+
+    @Override
     public Page<VideoPreviewDTO> getVideoPreviews(int pageNo, int pageSize, String sortBy) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
 
-        Page<VideoPreviewDTO> pagedRes = videoRepository.findAll(pageable).map(videoMapper::videoToPreviewDTO);
+        Page<VideoPreviewDTO> pagedRes = videoRepository.findAll(pageable).map(this::videoToPreviewDTOWithPresignedThumbnail);
 
         if (pagedRes.hasContent()) {
             return pagedRes;
