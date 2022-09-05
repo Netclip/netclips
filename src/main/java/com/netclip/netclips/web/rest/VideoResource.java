@@ -319,7 +319,7 @@ public class VideoResource {
     public ResponseEntity<Page<VideoPreviewDTO>> getVideoPreviews(
         @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
         @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
-        @RequestParam(value = "sortBy", defaultValue = "id") String sortBy
+        @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy
     ) {
         log.debug("REST request to get a page of Videos");
         Page<VideoPreviewDTO> page = videoService.getVideoPreviews(pageNo, pageSize, sortBy);
