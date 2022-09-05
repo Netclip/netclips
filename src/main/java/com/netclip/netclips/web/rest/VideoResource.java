@@ -223,6 +223,7 @@ public class VideoResource {
         }
         VideoDTO videoDTO = videoMapper.videoToVideoDTO(videoRes.get());
         videoDTO.setPreSignedUrl(s3Service.generatePresignedUrl(videoDTO.getContentKey()));
+        videoDTO.setThumbnailPresignedUrl(s3Service.generatePresignedUrl(videoRes.get().getThumbnailRef()));
         return ResponseEntity.ok(videoDTO);
     }
 
