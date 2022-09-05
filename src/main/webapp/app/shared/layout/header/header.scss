@@ -43,7 +43,7 @@ Navbar styles
 .navbar-brand {
   display: flex;
   justify-content: space-between;
-  width: 56%;
+  width: auto;
   overflow: hidden;
 }
 
@@ -64,14 +64,12 @@ Navbar styles
     text-decoration: none;
   }
   .brand-icon {
-    height: 3px;
+    height: 5vh;
     width: auto;
     display: inline-block;
     img {
-      background-color: #f54242;
       height: auto;
-      width: 7.5rem;
-      margin-top: -30px;
+      width: 25vh;
     }
   }
 }
