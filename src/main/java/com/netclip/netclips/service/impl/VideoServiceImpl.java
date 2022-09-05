@@ -4,13 +4,15 @@ import com.netclip.netclips.domain.Comment;
 import com.netclip.netclips.domain.Video;
 import com.netclip.netclips.repository.VideoRepository;
 import com.netclip.netclips.service.VideoService;
+import com.netclip.netclips.service.dto.VideoPreviewDTO;
+import com.netclip.netclips.service.mapper.VideoMapper;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,8 +28,11 @@ public class VideoServiceImpl implements VideoService {
     @Autowired
     private final VideoRepository videoRepository;
 
-    public VideoServiceImpl(VideoRepository videoRepository) {
+    private final VideoMapper videoMapper;
+
+    public VideoServiceImpl(VideoRepository videoRepository, VideoMapper videoMapper) {
         this.videoRepository = videoRepository;
+        this.videoMapper = videoMapper;
     }
 
     public Video updateVideoComment(Comment comment, Video video) {
@@ -113,5 +118,17 @@ public class VideoServiceImpl implements VideoService {
     public void delete(Long id) {
         log.debug("Request to delete Video : {}", id);
         videoRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<VideoPreviewDTO> getVideoPreviews(int pageNo, int pageSize, String sortBy) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
+
+        Page<VideoPreviewDTO> pagedRes = videoRepository.findAll(pageable).map(videoMapper::videoToPreviewDTO);
+
+        if (pagedRes.hasContent()) {
+            return pagedRes;
+        }
+        return new PageImpl<>(new ArrayList<>());
     }
 }

@@ -1,23 +1,43 @@
 package com.netclip.netclips.web.rest;
 
+import com.amazonaws.Response;
+import com.netclip.netclips.domain.User;
 import com.netclip.netclips.domain.Video;
+import com.netclip.netclips.domain.VideoUser;
 import com.netclip.netclips.repository.VideoRepository;
+import com.netclip.netclips.repository.VideoUserRepository;
+import com.netclip.netclips.security.AuthoritiesConstants;
+import com.netclip.netclips.service.S3Service;
 import com.netclip.netclips.service.VideoService;
+import com.netclip.netclips.service.dto.UploadDTO;
+import com.netclip.netclips.service.dto.VideoDTO;
+import com.netclip.netclips.service.dto.VideoPreviewDTO;
+import com.netclip.netclips.service.impl.VideoUserServiceImpl;
+import com.netclip.netclips.service.mapper.VideoMapper;
 import com.netclip.netclips.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
@@ -31,8 +51,16 @@ import tech.jhipster.web.util.ResponseUtil;
 public class VideoResource {
 
     private final Logger log = LoggerFactory.getLogger(VideoResource.class);
-
     private static final String ENTITY_NAME = "video";
+
+    @Autowired
+    private final S3Service s3Service;
+
+    @Autowired
+    private final VideoUserRepository videoUserRepository;
+
+    @Autowired
+    private final VideoUserServiceImpl videoUserService;
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
@@ -40,21 +68,96 @@ public class VideoResource {
     private final VideoService videoService;
 
     private final VideoRepository videoRepository;
+    private final VideoMapper videoMapper;
 
-    public VideoResource(VideoService videoService, VideoRepository videoRepository) {
+    public VideoResource(
+        VideoService videoService,
+        VideoRepository videoRepository,
+        VideoUserRepository videoUserRepository,
+        S3Service s3Service,
+        VideoUserServiceImpl videoUserService,
+        VideoMapper videoMapper
+    ) {
         this.videoService = videoService;
         this.videoRepository = videoRepository;
+        this.videoUserRepository = videoUserRepository;
+        this.s3Service = s3Service;
+        this.videoUserService = videoUserService;
+        this.videoMapper = videoMapper;
+    }
+
+    //    @GetMapping("/testUser")
+    //    public ResponseEntity<String> testPrincipal(Authentication authentication) {
+    //        return new ResponseEntity<>(authentication.toString(), HttpStatus.OK);
+    //    }
+    @PostMapping("/videos/upload")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public ResponseEntity<UploadDTO> uploadVideo(
+        @RequestPart(value = "file") MultipartFile file,
+        Authentication auth,
+        @RequestParam(name = "title", required = false) String title,
+        @RequestParam(name = "description", required = false) String description
+    ) {
+        try {
+            Optional<VideoUser> vidUser = videoUserRepository.findByInternalUser_Login(auth.getName());
+            if (vidUser.isEmpty() || !vidUser.get().getInternalUser().isActivated()) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            String fileRef = s3Service.uploadFile(file);
+            UploadDTO upDTO = new UploadDTO.UploadDTOBuilder()
+                .userId(vidUser.get().getId())
+                .userLogin(vidUser.get().getInternalUser().getLogin())
+                .uploadedFilePath(fileRef)
+                .title(title)
+                .description(description)
+                .build();
+            Video videoEntity = s3Service.convertUploadDTOtoVideo(upDTO);
+            videoRepository.save(videoEntity);
+            vidUser.get().addVideos(videoEntity);
+            videoUserRepository.save(vidUser.get());
+            return new ResponseEntity<>(upDTO, HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
-     * {@code POST  /videos} : Create a new video.
+     * {@code DELETE  /videos/delete } : delete the "id" video entity and linked S3 bucket key.
+     * @param videoId the id of the video to delete.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} or {@code 204 (NO_CONTENT)} if video not found.
+     */
+    @DeleteMapping(value = "/videos/delete")
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public ResponseEntity<String> deleteVideo(@RequestParam Long videoId, Authentication auth) {
+        Optional<Video> videoRes = videoRepository.findById(videoId);
+        Optional<VideoUser> videoUser = videoUserRepository.findByInternalUser_Login(auth.getName());
+        if (videoUser.isEmpty() || videoRes.isEmpty()) {
+            return new ResponseEntity<>("Invalid video response", HttpStatus.NO_CONTENT);
+        }
+        if (!videoRes.get().getUploader().getInternalUser().getLogin().equals(auth.getName())) {
+            return new ResponseEntity<>("You must be the video uploader or have admin privileges", HttpStatus.UNAUTHORIZED);
+        }
+        Video video = videoRes.get();
+        VideoUser user = videoUser.get();
+        s3Service.deleteFileByFullKey(video.getContentRef());
+        videoService.delete(video.getId());
+        VideoUser updatedUser = videoUserService.deleteVideoFromSet(user, video);
+        videoUserRepository.save(updatedUser);
+        return new ResponseEntity<>(video.toString(), HttpStatus.OK);
+    }
+
+    /**
+     * TESTING ONLY
+     * {@code POST  /videos} : Create a new video entity.
      *
      * @param video the video to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new video, or with status {@code 400 (Bad Request)} if the video has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/videos")
-    public ResponseEntity<Video> createVideo(@RequestBody Video video) throws URISyntaxException {
+    public ResponseEntity<Video> createVideoEntity(@RequestBody Video video) throws URISyntaxException {
         log.debug("REST request to save Video : {}", video);
         if (video.getId() != null) {
             throw new BadRequestAlertException("A new video cannot already have an ID", ENTITY_NAME, "idexists");
@@ -64,6 +167,25 @@ public class VideoResource {
             .created(new URI("/api/videos/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
+    }
+
+    /**
+     * {@code Get  /videos/fetch-play-video/{id}} : Fetch a video DTO with a presigned url to content
+     *
+     * @param id the video to fetch.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the video DTO
+     * @throws BadRequestAlertException if the video is not found
+     */
+    @GetMapping("/videos/fetch-play-video/{id}")
+    public ResponseEntity<VideoDTO> fetchPlayableVideo(@PathVariable("id") Long id) {
+        log.debug("REST request to fetch a playable Video DTO: {}", id);
+        Optional<Video> videoRes = videoRepository.findById(id);
+        if (videoRes.isEmpty()) {
+            throw new BadRequestAlertException("Video by ID not found", ENTITY_NAME, "videonotfound");
+        }
+        VideoDTO videoDTO = videoMapper.videoToVideoDTO(videoRes.get());
+        videoDTO.setPreSignedUrl(s3Service.generatePresignedUrl(videoDTO.getContentKey()));
+        return ResponseEntity.ok(videoDTO);
     }
 
     /**
@@ -147,6 +269,26 @@ public class VideoResource {
     }
 
     /**
+     * {@code GET  /video-previews} : gets paginated video previews.
+     *
+     * @param pageNo the page number.
+     * @param pageSize elements per page
+     * @param sortBy the sort key
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of video previews in body.
+     */
+    @GetMapping("/video-previews")
+    public ResponseEntity<Page<VideoPreviewDTO>> getVideoPreviews(
+        @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+        @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+        @RequestParam(value = "sortBy", defaultValue = "id") String sortBy
+    ) {
+        log.debug("REST request to get a page of Videos");
+        Page<VideoPreviewDTO> page = videoService.getVideoPreviews(pageNo, pageSize, sortBy);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page);
+    }
+
+    /**
      * {@code GET  /videos/:id} : get the "id" video.
      *
      * @param id the id of the video to retrieve.
@@ -160,7 +302,8 @@ public class VideoResource {
     }
 
     /**
-     * {@code DELETE  /videos/:id} : delete the "id" video.
+     * TESTING ONLY
+     * {@code DELETE  /videos/:id} : delete the "id" video ENTITY.
      *
      * @param id the id of the video to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
