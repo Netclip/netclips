@@ -148,10 +148,11 @@ public class VideoUserResource {
     /**
      * {@code GET  /video-users} : get all the videoUsers.
      *
+     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of videoUsers in body.
      */
     @GetMapping("/video-users")
-    public List<VideoUser> getAllVideoUsers() {
+    public List<VideoUser> getAllVideoUsers(@RequestParam(required = false, defaultValue = "false") boolean eagerload) {
         log.debug("REST request to get all VideoUsers");
         return videoUserService.findAll();
     }

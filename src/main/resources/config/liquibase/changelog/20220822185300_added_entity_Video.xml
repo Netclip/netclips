@@ -32,6 +32,12 @@
             <column name="upload_date" type="date">
                 <constraints nullable="true" />
             </column>
+            <column name="view_count" type="integer">
+                <constraints nullable="true" />
+            </column>
+            <column name="thumbnail_ref" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
             <column name="uploader_id" type="bigint">
                 <constraints nullable="true" />
             </column>
@@ -62,6 +68,8 @@
             <column name="likes" type="numeric"/>
             <column name="dislikes" type="numeric"/>
             <column name="upload_date" type="date"/>
+            <column name="view_count" type="numeric"/>
+            <column name="thumbnail_ref" type="string"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>

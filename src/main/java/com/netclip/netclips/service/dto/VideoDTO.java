@@ -11,6 +11,8 @@ public class VideoDTO extends VideoPreviewDTO {
 
     private String preSignedUrl;
 
+    private String thumbnailPresignedUrl;
+
     private Long likes;
 
     private Long dislikes;
@@ -39,6 +41,14 @@ public class VideoDTO extends VideoPreviewDTO {
 
     public void setPreSignedUrl(String preSignedUrl) {
         this.preSignedUrl = preSignedUrl;
+    }
+
+    public String getThumbnailPresignedUrl() {
+        return thumbnailPresignedUrl;
+    }
+
+    public void setThumbnailPresignedUrl(String thumbnailPresignedUrl) {
+        this.thumbnailPresignedUrl = thumbnailPresignedUrl;
     }
 
     public Long getLikes() {

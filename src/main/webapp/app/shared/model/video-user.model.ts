@@ -7,6 +7,8 @@ export interface IVideoUser {
   internalUser?: IUser | null;
   comments?: IComment[] | null;
   videos?: IVideo[] | null;
+  likedVideos?: IVideo[] | null;
+  videosDisliked?: IVideo[] | null;
 }
 
 export const defaultValue: Readonly<IVideoUser> = {};

@@ -5,6 +5,7 @@ import com.netclip.netclips.domain.VideoUser;
 import com.netclip.netclips.repository.VideoUserRepository;
 import com.netclip.netclips.service.dto.UploadDTO;
 import com.netclip.netclips.service.dto.VideoDTO;
+import com.netclip.netclips.service.dto.VideoPreviewDTO;
 import java.time.LocalDate;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,5 +34,9 @@ public class VideoMapper {
 
     public VideoDTO videoToVideoDTO(Video video) {
         return new VideoDTO(video);
+    }
+
+    public VideoPreviewDTO videoToPreviewDTO(Video video) {
+        return new VideoPreviewDTO(video);
     }
 }

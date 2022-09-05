@@ -35,7 +35,7 @@ public class Comment implements Serializable {
     private Long dislikes;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "internalUser", "comments", "videos" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "internalUser", "comments", "videos", "likedVideos", "videosDisliked" }, allowSetters = true)
     private VideoUser videoUser;
 
     @ManyToOne
@@ -43,7 +43,6 @@ public class Comment implements Serializable {
     private Video video;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
-
     public Comment() {}
 
     public Long getId() {

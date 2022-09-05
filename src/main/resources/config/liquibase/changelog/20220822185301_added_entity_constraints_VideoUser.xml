@@ -13,5 +13,29 @@
                                  constraintName="fk_video_user__internal_user_id"
                                  referencedColumnNames="id"
                                  referencedTableName="jhi_user"/>
+
+        <addForeignKeyConstraint baseColumnNames="video_user_id"
+                                 baseTableName="rel_video_user__liked_videos"
+                                 constraintName="fk_rel_video_user__liked_videos__video_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="video_user"/>
+
+        <addForeignKeyConstraint baseColumnNames="liked_videos_id"
+                                 baseTableName="rel_video_user__liked_videos"
+                                 constraintName="fk_rel_video_user__liked_videos__liked_videos_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="video"/>
+
+        <addForeignKeyConstraint baseColumnNames="video_user_id"
+                                 baseTableName="rel_video_user__videos_disliked"
+                                 constraintName="fk_rel_video_user__videos_disliked__video_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="video_user"/>
+
+        <addForeignKeyConstraint baseColumnNames="videos_disliked_id"
+                                 baseTableName="rel_video_user__videos_disliked"
+                                 constraintName="fk_rel_video_user__videos_disliked__videos_disliked_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="video"/>
     </changeSet>
 </databaseChangeLog>

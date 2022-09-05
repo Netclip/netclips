@@ -28,6 +28,22 @@
       "otherEntityRelationshipName": "uploader",
       "relationshipName": "videos",
       "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "video",
+      "otherEntityRelationshipName": "dislikedUsers",
+      "ownerSide": true,
+      "relationshipName": "likedVideos",
+      "relationshipType": "many-to-many"
+    },
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "video",
+      "otherEntityRelationshipName": "dislikedUsers",
+      "ownerSide": true,
+      "relationshipName": "videosDisliked",
+      "relationshipType": "many-to-many"
     }
   ],
   "service": "serviceImpl"

@@ -24,7 +24,6 @@ public class CommentServiceImpl implements CommentService {
     private final Logger log = LoggerFactory.getLogger(CommentServiceImpl.class);
 
     private final CommentRepository commentRepository;
-
     private final CommentMapper commentMapper;
 
     public CommentServiceImpl(CommentRepository commentRepository, CommentMapper commentMapper) {
