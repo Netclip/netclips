@@ -23,7 +23,7 @@ function Sidebar() {
           <SidebarRow Icon={HomeSharp} Title="Home" />
         </Link>
         <hr />
-        <Link to={`/video`}>
+        <Link to={`/userVideo`}>
           <SidebarRow Icon={OndemandVideoSharp} Title="Your Videos" />
         </Link>
         <SidebarRow Icon={ThumbUpAltSharp} Title="Liked Videos" />
