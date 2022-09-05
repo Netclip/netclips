@@ -4,7 +4,7 @@ import VideoCard from './test components/VideoCard';
 
 import '../components/test components/recommendedVideos.scss';
 
-const API_URL = '/api/';
+const API_URL = '/api/video-previews/';
 
 function FrontPage() {
   const [video, setVideo] = useState([]);
@@ -12,9 +12,9 @@ function FrontPage() {
 
   const getAllVideos = async () => {
     try {
-      const response = await axios.get(`${API_URL}videos`);
-      console.log(response.data);
-      setVideo(response.data);
+      const response = await axios.get(`${API_URL}`);
+      console.log(response.data.content);
+      setVideo(response.data.content);
     } catch (err) {
       console.log(err);
     }
@@ -34,6 +34,7 @@ function FrontPage() {
             return (
               <div key={index}>
                 <div className="recommendedVideos__videos">
+                  {/* {video.id} */}
                   <VideoCard
                     title={video.title}
                     views={`${video.viewCount} Views`}

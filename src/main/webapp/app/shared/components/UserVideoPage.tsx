@@ -4,7 +4,8 @@ import VideoCard from './test components/VideoCard';
 
 import '../components/test components/recommendedVideos.scss';
 
-const API_URL = '/api/video-user/';
+const API_URL2 = '/api/video-user/';
+const API_URL = '/api/video-previews/';
 
 function UserVideoPage() {
   const [video, setVideo] = useState([]);
@@ -12,9 +13,9 @@ function UserVideoPage() {
 
   const getAllVideos = async () => {
     try {
-      const response = await axios.get(`${API_URL}1/videos`);
-      console.log(response.data);
-      setVideo(response.data);
+      const response = await axios.get(`${API_URL}`);
+      console.log(response.data.content);
+      setVideo(response.data.content);
     } catch (err) {
       console.log(err);
     }
