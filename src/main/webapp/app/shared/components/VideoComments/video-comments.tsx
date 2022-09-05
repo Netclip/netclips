@@ -7,6 +7,7 @@ const API_URL = '/api/';
 
 function VideoComments() {
   const [comment, setComments] = useState([]);
+
   const axios = require('axios');
 
   const getComments = async () => {
