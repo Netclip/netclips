@@ -24,7 +24,7 @@ export const Home = () => {
   return (
     <>
       <BreakpointProvider>
-        <SearchBar />
+        {/* <SearchBar /> */}
         <div className="hipster">
           <div className="app__page">
             <Sidebar />
