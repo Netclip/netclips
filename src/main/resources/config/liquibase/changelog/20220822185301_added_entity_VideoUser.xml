@@ -21,6 +21,31 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="20220822185301-1-relations" author="jhipster">
+
+        <createTable tableName="rel_video_user__liked_videos">
+            <column name="liked_videos_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="video_user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="video_user_id, liked_videos_id" tableName="rel_video_user__liked_videos"/>
+
+        <createTable tableName="rel_video_user__videos_disliked">
+            <column name="videos_disliked_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="video_user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="video_user_id, videos_disliked_id" tableName="rel_video_user__videos_disliked"/>
+    </changeSet>
+
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
 
     <!--

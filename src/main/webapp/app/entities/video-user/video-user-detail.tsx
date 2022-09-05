@@ -30,6 +30,28 @@ export const VideoUserDetail = () => {
           <dd>{videoUserEntity.id}</dd>
           <dt>Internal User</dt>
           <dd>{videoUserEntity.internalUser ? videoUserEntity.internalUser.id : ''}</dd>
+          <dt>Liked Videos</dt>
+          <dd>
+            {videoUserEntity.likedVideos
+              ? videoUserEntity.likedVideos.map((val, i) => (
+                  <span key={val.id}>
+                    <a>{val.id}</a>
+                    {videoUserEntity.likedVideos && i === videoUserEntity.likedVideos.length - 1 ? '' : ', '}
+                  </span>
+                ))
+              : null}
+          </dd>
+          <dt>Videos Disliked</dt>
+          <dd>
+            {videoUserEntity.videosDisliked
+              ? videoUserEntity.videosDisliked.map((val, i) => (
+                  <span key={val.id}>
+                    <a>{val.id}</a>
+                    {videoUserEntity.videosDisliked && i === videoUserEntity.videosDisliked.length - 1 ? '' : ', '}
+                  </span>
+                ))
+              : null}
+          </dd>
         </dl>
         <Button tag={Link} to="/video-user" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" /> <span className="d-none d-md-inline">Back</span>

@@ -42,17 +42,22 @@ public class Video implements Serializable {
     @Column(name = "upload_date")
     private LocalDate uploadDate;
 
+    @Column(name = "view_count")
+    private Integer viewCount;
+
+    @Column(name = "thumbnail_ref")
+    private String thumbnailRef;
+
     @OneToMany(mappedBy = "video")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "videoUser", "video" }, allowSetters = true)
     private Set<Comment> comments = new HashSet<>();
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "internalUser", "comments", "videos" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "internalUser", "comments", "videos", "likedVideos", "videosDisliked" }, allowSetters = true)
     private VideoUser uploader;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
-
     public Video() {}
 
     public Long getId() {
@@ -146,6 +151,32 @@ public class Video implements Serializable {
         this.uploadDate = uploadDate;
     }
 
+    public Integer getViewCount() {
+        return this.viewCount;
+    }
+
+    public Video viewCount(Integer viewCount) {
+        this.setViewCount(viewCount);
+        return this;
+    }
+
+    public void setViewCount(Integer viewCount) {
+        this.viewCount = viewCount;
+    }
+
+    public String getThumbnailRef() {
+        return this.thumbnailRef;
+    }
+
+    public Video thumbnailRef(String thumbnailRef) {
+        this.setThumbnailRef(thumbnailRef);
+        return this;
+    }
+
+    public void setThumbnailRef(String thumbnailRef) {
+        this.thumbnailRef = thumbnailRef;
+    }
+
     public Set<Comment> getComments() {
         return this.comments;
     }
@@ -220,6 +251,8 @@ public class Video implements Serializable {
             ", likes=" + getLikes() +
             ", dislikes=" + getDislikes() +
             ", uploadDate='" + getUploadDate() + "'" +
+            ", viewCount=" + getViewCount() +
+            ", thumbnailRef='" + getThumbnailRef() + "'" +
             "}";
     }
 }

@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -92,26 +93,27 @@ public class S3Service {
         return "";
     }
 
-    public String uploadFile(MultipartFile multipartFile) {
-        String uniqueName = generateUniqueFileName(multipartFile);
-        String fileKey = "";
+    public String uploadFile(MultipartFile multipartFile, String fileName) {
         try {
             File file = multiPartToFile(multipartFile);
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, uniqueName, file);
-            log.info("Uploading file: " + uniqueName);
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, fileName, file);
+            log.info("Uploading file: " + fileName);
             s3Client.putObject(putObjectRequest);
-            log.info("Upload complete: " + uniqueName);
-            fileKey = uniqueName;
+            log.info("Upload complete: " + fileName);
             file.delete();
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
-        return fileKey;
+        return fileName;
     }
 
-    private String generateUniqueFileName(MultipartFile multipartFile) {
+    public String generateUniqueFileName(MultipartFile multipartFile) {
         return prefix + new Date().getTime() + "-" + Objects.requireNonNull(multipartFile.getOriginalFilename()).replace(" ", "_");
+    }
+
+    public String generateThumbnailName(MultipartFile multipartFile) {
+        return prefix + "img/" + new Date().getTime() + "-" + Objects.requireNonNull(multipartFile.getOriginalFilename()).replace(" ", "_");
     }
 
     private File multiPartToFile(MultipartFile multiFile) {
@@ -126,8 +128,8 @@ public class S3Service {
         return resFile;
     }
 
-    public void deleteFile(String fileKey) {
-        s3Client.deleteObject(bucketName, prefix + fileKey);
+    public void deleteFile(String fileName) {
+        s3Client.deleteObject(bucketName, prefix + fileName);
     }
 
     public void deleteFileByFullKey(String fullFileKey) {

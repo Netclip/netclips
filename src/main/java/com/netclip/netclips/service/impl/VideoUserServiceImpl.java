@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,11 +61,15 @@ public class VideoUserServiceImpl implements VideoUserService {
         return videoUserRepository.findAll();
     }
 
+    public Page<VideoUser> findAllWithEagerRelationships(Pageable pageable) {
+        return videoUserRepository.findAllWithEagerRelationships(pageable);
+    }
+
     @Override
     @Transactional(readOnly = true)
     public Optional<VideoUser> findOne(Long id) {
         log.debug("Request to get VideoUser : {}", id);
-        return videoUserRepository.findById(id);
+        return videoUserRepository.findOneWithEagerRelationships(id);
     }
 
     @Override
@@ -72,9 +78,32 @@ public class VideoUserServiceImpl implements VideoUserService {
         videoUserRepository.deleteById(id);
     }
 
+    @Override
     public VideoUser deleteVideoFromSet(VideoUser videoUser, Video video) {
         Set<Video> ownedVideos = videoUser.getVideos();
         ownedVideos.remove(video);
+        videoUser.setVideos(ownedVideos);
         return videoUser;
+    }
+
+    @Override
+    public VideoUser removeLikedVideo(VideoUser videoUser, Video video) {
+        Set<Video> likedVideos = videoUser.getLikedVideos();
+        likedVideos.remove(video);
+        videoUser.setVideos(likedVideos);
+        return videoUser;
+    }
+
+    @Override
+    public VideoUser removeDislikedVideo(VideoUser videoUser, Video video) {
+        Set<Video> dislikedVideos = videoUser.getVideosDisliked();
+        dislikedVideos.remove(video);
+        videoUser.setVideosDisliked(dislikedVideos);
+        return videoUser;
+    }
+
+    @Override
+    public Optional<VideoUser> findByUserLogin(String login) {
+        return videoUserRepository.findByInternalUser_Login(login);
     }
 }

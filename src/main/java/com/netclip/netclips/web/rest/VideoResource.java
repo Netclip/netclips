@@ -1,6 +1,7 @@
 package com.netclip.netclips.web.rest;
 
 import com.amazonaws.Response;
+import com.netclip.netclips.domain.Authority;
 import com.netclip.netclips.domain.User;
 import com.netclip.netclips.domain.Video;
 import com.netclip.netclips.domain.VideoUser;
@@ -11,6 +12,7 @@ import com.netclip.netclips.service.S3Service;
 import com.netclip.netclips.service.VideoService;
 import com.netclip.netclips.service.dto.UploadDTO;
 import com.netclip.netclips.service.dto.VideoDTO;
+import com.netclip.netclips.service.dto.VideoPreviewDTO;
 import com.netclip.netclips.service.impl.VideoUserServiceImpl;
 import com.netclip.netclips.service.mapper.VideoMapper;
 import com.netclip.netclips.web.rest.errors.BadRequestAlertException;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +53,6 @@ import tech.jhipster.web.util.ResponseUtil;
 public class VideoResource {
 
     private final Logger log = LoggerFactory.getLogger(VideoResource.class);
-
     private static final String ENTITY_NAME = "video";
 
     @Autowired
@@ -68,7 +70,6 @@ public class VideoResource {
     private final VideoService videoService;
 
     private final VideoRepository videoRepository;
-
     private final VideoMapper videoMapper;
 
     public VideoResource(
@@ -92,6 +93,34 @@ public class VideoResource {
     //        return new ResponseEntity<>(authentication.toString(), HttpStatus.OK);
     //    }
 
+    @PostMapping("videos/thumbnail")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    @Transactional
+    public ResponseEntity<VideoPreviewDTO> uploadThumbnail(
+        @RequestPart(name = "file") MultipartFile file,
+        @RequestParam(name = "video_id") Long videoId,
+        Authentication auth
+    ) {
+        Optional<VideoUser> userRes = videoUserService.findByUserLogin(auth.getName());
+        Optional<Video> videoRes = videoService.findOne(videoId);
+        if (userRes.isEmpty()) {
+            throw new BadRequestAlertException("User not found", ENTITY_NAME, "idnotfound");
+        }
+        if (videoRes.isEmpty()) {
+            throw new BadRequestAlertException("Video not found", ENTITY_NAME, "idnotfound");
+        }
+        VideoUser user = userRes.get();
+        Set<String> userRoles = user.getInternalUser().getAuthorities().stream().map(Authority::getName).collect(Collectors.toSet());
+        if ((!userRoles.contains(AuthoritiesConstants.ADMIN) && (!user.getInternalUser().getLogin().equals(auth.getName())))) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        s3Service.deleteFileByFullKey(videoRes.get().getThumbnailRef());
+        Video updatedVid = videoService.uploadThumbnail(videoRes.get(), file);
+        VideoPreviewDTO vidDTO = new VideoPreviewDTO(updatedVid);
+
+        return ResponseEntity.ok(vidDTO);
+    }
+
     @PostMapping("/videos/upload")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -106,7 +135,7 @@ public class VideoResource {
             if (vidUser.isEmpty() || !vidUser.get().getInternalUser().isActivated()) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
-            String fileRef = s3Service.uploadFile(file);
+            String fileRef = s3Service.uploadFile(file, s3Service.generateUniqueFileName(file));
             UploadDTO upDTO = new UploadDTO.UploadDTOBuilder()
                 .userId(vidUser.get().getId())
                 .userLogin(vidUser.get().getInternalUser().getLogin())
@@ -114,13 +143,10 @@ public class VideoResource {
                 .title(title)
                 .description(description)
                 .build();
-
             Video videoEntity = s3Service.convertUploadDTOtoVideo(upDTO);
             videoRepository.save(videoEntity);
-
             vidUser.get().addVideos(videoEntity);
             videoUserRepository.save(vidUser.get());
-
             return new ResponseEntity<>(upDTO, HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
@@ -128,40 +154,48 @@ public class VideoResource {
         }
     }
 
+    /**
+     * {@code DELETE  /videos/delete } : delete the "id" video entity and linked S3 bucket key.
+     * @param videoId the id of the video to delete.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} or {@code 204 (NO_CONTENT)} if video not found.
+     */
     @DeleteMapping(value = "/videos/delete")
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-    public ResponseEntity<String> deleteVideo(@RequestParam Long id, Authentication auth) {
-        Optional<Video> videoRes = videoRepository.findById(id);
-        Optional<VideoUser> videoUser = videoUserRepository.findByInternalUser_Login(auth.getName());
-        if (videoUser.isEmpty() || videoRes.isEmpty()) {
-            return new ResponseEntity<>("Invalid video response", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> deleteVideo(@RequestParam(name = "video_id") Long videoId, Authentication auth) {
+        Optional<Video> videoRes = videoRepository.findById(videoId);
+        Optional<VideoUser> videoUserRes = videoUserRepository.findByInternalUser_Login(auth.getName());
+        if (videoUserRes.isEmpty() || videoRes.isEmpty()) {
+            return new ResponseEntity<>("Invalid video response", HttpStatus.NO_CONTENT);
         }
-        if (!videoRes.get().getUploader().getInternalUser().getLogin().equals(auth.getName())) {
+        User user = videoUserRes.get().getInternalUser();
+        Set<String> userRoles = user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toSet());
+        if ((!userRoles.contains(AuthoritiesConstants.ADMIN) && (!user.getLogin().equals(auth.getName())))) {
             return new ResponseEntity<>("You must be the video uploader or have admin privileges", HttpStatus.UNAUTHORIZED);
         }
+
         Video video = videoRes.get();
-        VideoUser user = videoUser.get();
+        VideoUser vidUser = videoUserRes.get();
+        s3Service.deleteFileByFullKey(video.getContentRef());
+        vidUser = videoUserService.deleteVideoFromSet(vidUser, video);
+        vidUser = videoUserService.removeDislikedVideo(vidUser, video);
+        vidUser = videoUserService.removeLikedVideo(vidUser, video);
+        videoUserRepository.save(vidUser);
 
-        String[] pathSplit = video.getContentRef().split("/");
-        String fileName = pathSplit[pathSplit.length - 1];
-
-        s3Service.deleteFile(fileName);
         videoService.delete(video.getId());
-        videoUserService.deleteVideoFromSet(user, video);
-        videoUserRepository.save(user);
 
         return new ResponseEntity<>(video.toString(), HttpStatus.OK);
     }
 
     /**
-     * {@code POST  /videos} : Create a new video.
+     * TESTING ONLY
+     * {@code POST  /videos} : Create a new video entity.
      *
      * @param video the video to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new video, or with status {@code 400 (Bad Request)} if the video has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/videos")
-    public ResponseEntity<Video> createVideo(@RequestBody Video video) throws URISyntaxException {
+    public ResponseEntity<Video> createVideoEntity(@RequestBody Video video) throws URISyntaxException {
         log.debug("REST request to save Video : {}", video);
         if (video.getId() != null) {
             throw new BadRequestAlertException("A new video cannot already have an ID", ENTITY_NAME, "idexists");
@@ -173,6 +207,13 @@ public class VideoResource {
             .body(result);
     }
 
+    /**
+     * {@code Get  /videos/fetch-play-video/{id}} : Fetch a video DTO with a presigned url to content
+     *
+     * @param id the video to fetch.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the video DTO
+     * @throws BadRequestAlertException if the video is not found
+     */
     @GetMapping("/videos/fetch-play-video/{id}")
     public ResponseEntity<VideoDTO> fetchPlayableVideo(@PathVariable("id") Long id) {
         log.debug("REST request to fetch a playable Video DTO: {}", id);
@@ -182,6 +223,7 @@ public class VideoResource {
         }
         VideoDTO videoDTO = videoMapper.videoToVideoDTO(videoRes.get());
         videoDTO.setPreSignedUrl(s3Service.generatePresignedUrl(videoDTO.getContentKey()));
+        videoDTO.setThumbnailPresignedUrl(s3Service.generatePresignedUrl(videoRes.get().getThumbnailRef()));
         return ResponseEntity.ok(videoDTO);
     }
 
@@ -266,6 +308,26 @@ public class VideoResource {
     }
 
     /**
+     * {@code GET  /video-previews} : gets paginated video previews.
+     *
+     * @param pageNo the page number.
+     * @param pageSize elements per page
+     * @param sortBy the sort key
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of video previews in body.
+     */
+    @GetMapping("/video-previews")
+    public ResponseEntity<Page<VideoPreviewDTO>> getVideoPreviews(
+        @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+        @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+        @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy
+    ) {
+        log.debug("REST request to get a page of Videos");
+        Page<VideoPreviewDTO> page = videoService.getVideoPreviews(pageNo, pageSize, sortBy);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page);
+    }
+
+    /**
      * {@code GET  /videos/:id} : get the "id" video.
      *
      * @param id the id of the video to retrieve.
@@ -277,19 +339,21 @@ public class VideoResource {
         Optional<Video> video = videoService.findOne(id);
         return ResponseUtil.wrapOrNotFound(video);
     }
+
     /**
-     * {@code DELETE  /videos/:id} : delete the "id" video.
+     * TESTING ONLY
+     * {@code DELETE  /videos/:id} : delete the "id" video ENTITY.
      *
      * @param id the id of the video to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    //    @DeleteMapping("/videos/{id}")
-    //    public ResponseEntity<Void> deleteVideo(@PathVariable Long id) {
-    //        log.debug("REST request to delete Video : {}", id);
-    //        videoService.delete(id);
-    //        return ResponseEntity
-    //            .noContent()
-    //            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
-    //            .build();
-    //    }
+    @DeleteMapping("/videos/{id}")
+    public ResponseEntity<Void> deleteVideo(@PathVariable Long id) {
+        log.debug("REST request to delete Video : {}", id);
+        videoService.delete(id);
+        return ResponseEntity
+            .noContent()
+            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
+            .build();
+    }
 }

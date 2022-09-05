@@ -141,6 +141,12 @@ export const Video = () => {
                   <th className="hand" onClick={sort('uploadDate')}>
                     Upload Date <FontAwesomeIcon icon="sort" />
                   </th>
+                  <th className="hand" onClick={sort('viewCount')}>
+                    View Count <FontAwesomeIcon icon="sort" />
+                  </th>
+                  <th className="hand" onClick={sort('thumbnailRef')}>
+                    Thumbnail Ref <FontAwesomeIcon icon="sort" />
+                  </th>
                   <th>
                     Uploader <FontAwesomeIcon icon="sort" />
                   </th>
@@ -161,6 +167,8 @@ export const Video = () => {
                     <td>{video.likes}</td>
                     <td>{video.dislikes}</td>
                     <td>{video.uploadDate ? <TextFormat type="date" value={video.uploadDate} format={APP_LOCAL_DATE_FORMAT} /> : null}</td>
+                    <td>{video.viewCount}</td>
+                    <td>{video.thumbnailRef}</td>
                     <td>{video.uploader ? <Link to={`/video-user/${video.uploader.id}`}>{video.uploader.id}</Link> : ''}</td>
                     <td className="text-end">
                       <div className="btn-group flex-btn-group-container">

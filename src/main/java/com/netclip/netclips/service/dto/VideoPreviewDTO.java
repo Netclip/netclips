@@ -12,6 +12,7 @@ public class VideoPreviewDTO {
     private LocalDate uploadDate;
     private String uploaderLogin;
     private Long uploaderId;
+    private Integer viewCount;
 
     public VideoPreviewDTO(Video video) {
         this.id = video.getId();
@@ -20,6 +21,16 @@ public class VideoPreviewDTO {
         this.uploadDate = video.getUploadDate();
         this.uploaderLogin = video.getUploader().getInternalUser().getLogin();
         this.uploaderId = video.getUploader().getId();
+        this.viewCount = video.getViewCount();
+        this.thumbnailRef = video.getThumbnailRef();
+    }
+
+    public Integer getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(Integer viewCount) {
+        this.viewCount = viewCount;
     }
 
     public Long getId() {

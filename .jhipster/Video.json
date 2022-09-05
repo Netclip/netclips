@@ -28,6 +28,14 @@
     {
       "fieldName": "uploadDate",
       "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "viewCount",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "thumbnailRef",
+      "fieldType": "String"
     }
   ],
   "fluentMethods": true,

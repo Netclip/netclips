@@ -1,9 +1,14 @@
 package com.netclip.netclips.service;
 
+import com.netclip.netclips.domain.Comment;
+import com.netclip.netclips.domain.User;
 import com.netclip.netclips.domain.Video;
+import com.netclip.netclips.domain.VideoUser;
+import com.netclip.netclips.service.dto.VideoPreviewDTO;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Service Interface for managing {@link Video}.
@@ -55,6 +60,14 @@ public interface VideoService {
      * @return the entity
      */
     Optional<Video> findVideoByContentKey(String contentRef);
+
+    Video updateVideoComment(Comment comment, Video video);
+
+    Video uploadThumbnail(Video video, MultipartFile file);
+
+    Page<VideoPreviewDTO> getVideoPreviews(int pageNo, int pageSize, String sortBy);
+
+    VideoPreviewDTO videoToPreviewDTOWithPresignedThumbnail(Video video);
 
     /**
      * Delete the "id" video.

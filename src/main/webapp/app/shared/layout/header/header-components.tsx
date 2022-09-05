@@ -5,42 +5,24 @@ import { NavLink as Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Icons } from 'react-toastify';
 import 'app/shared/components/test components/Header.scss';
-import MenuSharpIcon from '@mui/icons-material/MenuSharp';
-import SearchIcon from '@mui/icons-material/Search';
-import VideoCallSharpIcon from '@mui/icons-material/VideoCallSharp';
-import AppsSharpIcon from '@mui/icons-material/AppsSharp';
-import NotificationsSharpIcon from '@mui/icons-material/NotificationsSharp';
-import { Avatar } from '@mui/material';
+import SearchBar from 'app/modules/home/SearchBar/searchbar';
 
 export const BrandIcon = props => (
   <div {...props} className="brand-icon">
-    <img src="content/images/netclips.PNG" alt="Logo" />
+    <img src="content/images/NetClips-12.png" alt="Logo" />
   </div>
 );
 
 // const [inputSearch, setInputSearch] = useState('');
 
 export const Brand = () => (
-  <NavbarBrand tag={Link} to="/" className="brand-logo">
-    <BrandIcon />
-    <div>
-      <span className="brand-title">NetClips</span>
-      <span className="navbar-version">{VERSION}</span>
-    </div>
-    {/* <div className='header__input'>
-            <input
-                onChange={e => setInputSearch(e.target.value)}
-                value={inputSearch}
-                placeholder="Search"
-                type="text"
-            />
+  <>
+    <NavbarBrand tag={Link} to="/" className="brand-logo">
+      <BrandIcon />
+    </NavbarBrand>
 
-            <Link to={`/search/${inputSearch}`}>
-                <SearchIcon className='header__inputButton' />
-            </Link>
-
-        </div> */}
-  </NavbarBrand>
+    <SearchBar />
+  </>
 );
 
 export const Home = () => (

@@ -23,10 +23,15 @@ h1 {
 }
 #videoPlaceholder {
   align-self: center;
-  background-color: rgba(220, 220, 220, 0.79);
+
   width: 93%;
   height: 32rem;
 }
+.col-centered {
+  float: none;
+  margin: 0 auto;
+}
+
 .videoDetailsContainer {
   display: flex;
   margin-top: 1rem;

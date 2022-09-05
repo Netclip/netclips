@@ -3,10 +3,14 @@ package com.netclip.netclips.service.impl;
 import com.netclip.netclips.domain.Comment;
 import com.netclip.netclips.repository.CommentRepository;
 import com.netclip.netclips.service.CommentService;
+import com.netclip.netclips.service.dto.CommentDTO;
+import com.netclip.netclips.service.mapper.CommentMapper;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,9 +24,11 @@ public class CommentServiceImpl implements CommentService {
     private final Logger log = LoggerFactory.getLogger(CommentServiceImpl.class);
 
     private final CommentRepository commentRepository;
+    private final CommentMapper commentMapper;
 
-    public CommentServiceImpl(CommentRepository commentRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, CommentMapper commentMapper) {
         this.commentRepository = commentRepository;
+        this.commentMapper = commentMapper;
     }
 
     @Override
@@ -32,9 +38,26 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public CommentDTO CommentToCommentDTO(Comment comment) {
+        return commentMapper.CommentToDTO(comment);
+    }
+
+    @Override
     public Comment update(Comment comment) {
         log.debug("Request to save Comment : {}", comment);
         return commentRepository.save(comment);
+    }
+
+    @Override
+    public Page<Comment> getAllByVideo(Long videoId, int pageNo, int pageSize, String sortBy) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
+
+        Page<Comment> pagedRes = commentRepository.findAllByVideo_Id(videoId, pageable);
+
+        if (pagedRes.hasContent()) {
+            return pagedRes;
+        }
+        return new PageImpl<>(new ArrayList<>());
     }
 
     @Override

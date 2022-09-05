@@ -6,6 +6,9 @@ import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
 import Video from './video';
 import VideoUser from './video-user';
 import Comment from './comment';
+import UserVideoPage from 'app/shared/components/UserVideoPage';
+import Sidebar from 'app/shared/components/test components/Sidebar';
+import { Breakpoint, BreakpointProvider } from 'react-socks';
 /* jhipster-needle-add-route-import - JHipster will add routes here */
 
 export default () => {
@@ -14,6 +17,21 @@ export default () => {
       <ErrorBoundaryRoutes>
         {/* prettier-ignore */}
         <Route path="video/*" element={<Video />} />
+        <Route
+          path="userVideo/*"
+          element={
+            <>
+              <BreakpointProvider>
+                <div>
+                  <div className="app__page">
+                    <Sidebar />
+                    <UserVideoPage />
+                  </div>
+                </div>
+              </BreakpointProvider>
+            </>
+          }
+        />
         <Route path="video-user/*" element={<VideoUser />} />
         <Route path="comment/*" element={<Comment />} />
         {/* jhipster-needle-add-route-path - JHipster will add routes here */}

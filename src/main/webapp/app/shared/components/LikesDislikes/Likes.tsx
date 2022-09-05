@@ -1,37 +1,43 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import './Likes.scss';
 
+// const Count = ({ count }) => {
+//   const [num, setNum] = useState(count);
+
+//   useEffect(() => {
+//     setNum(count);
+//   }, [count]);
+//   return <p>{num}</p>
+// }
+
 export const Like = props => {
-  var [likeCount, setLikeCount] = useState(props.likesCount);
-  var [likeStatus, setLikeStatus] = useState(false);
+  // function incrementLikes() {
+  //   likeCount = props.likesCount;
+  //     setLikeCount(++likeCount);
+  //     setLikeStatus(true);
 
-  function incrementLikes() {
-    likeCount = props.likesCount;
-    setLikeCount(++likeCount);
-    setLikeStatus(true);
+  //   if (likeStatus == true) {
+  //       setLikeCount(--likeCount);
+  //       setLikeStatus(false);
+  //     }
 
-    if (likeStatus == true) {
-      setLikeCount(--likeCount);
-      setLikeStatus(false);
-    }
-
-    useEffect(() => {
-      setLikeCount(likeCount);
-    });
-  }
-
+  //   useEffect(() => {
+  //       setLikeCount(likeCount);
+  //     });
+  //   }
   return (
     <div
       className="button"
-      onClick={incrementLikes}
+      onClick={props.function}
       style={{
-        backgroundColor: likeStatus ? 'orange' : '',
-        color: likeStatus ? 'black' : '',
+        backgroundColor: props.conditional ? '#a4dbc4' : '',
+        color: props.conditional ? 'black' : '',
       }}
     >
       {props.text}: <FontAwesomeIcon icon={props.icon} />
-      <div>{likeCount}</div>
+      <div>{props.count}</div>
     </div>
   );
 };

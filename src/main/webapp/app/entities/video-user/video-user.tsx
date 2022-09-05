@@ -48,6 +48,8 @@ export const VideoUser = () => {
               <tr>
                 <th>ID</th>
                 <th>Internal User</th>
+                <th>Liked Videos</th>
+                <th>Videos Disliked</th>
                 <th />
               </tr>
             </thead>
@@ -60,6 +62,26 @@ export const VideoUser = () => {
                     </Button>
                   </td>
                   <td>{videoUser.internalUser ? videoUser.internalUser.id : ''}</td>
+                  <td>
+                    {videoUser.likedVideos
+                      ? videoUser.likedVideos.map((val, j) => (
+                          <span key={j}>
+                            <Link to={`/video/${val.id}`}>{val.id}</Link>
+                            {j === videoUser.likedVideos.length - 1 ? '' : ', '}
+                          </span>
+                        ))
+                      : null}
+                  </td>
+                  <td>
+                    {videoUser.videosDisliked
+                      ? videoUser.videosDisliked.map((val, j) => (
+                          <span key={j}>
+                            <Link to={`/video/${val.id}`}>{val.id}</Link>
+                            {j === videoUser.videosDisliked.length - 1 ? '' : ', '}
+                          </span>
+                        ))
+                      : null}
+                  </td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/video-user/${videoUser.id}`} color="info" size="sm" data-cy="entityDetailsButton">

@@ -37,16 +37,20 @@ Developement Ribbon
 /* ==========================================================================
 Navbar styles
 ========================================================================== */
+#app-header {
+  margin-bottom: 4rem;
+}
 .navbar-brand {
   display: flex;
   justify-content: space-between;
-  width: 56%;
+  width: auto;
   overflow: hidden;
 }
 
 .jh-navbar .navbar-nav .nav-link {
   padding-right: 0;
   padding-left: 0;
+  padding-top: 0;
 }
 
 .navbar-version {
@@ -60,15 +64,12 @@ Navbar styles
     text-decoration: none;
   }
   .brand-icon {
-    height: 3px;
+    height: 5vh;
     width: auto;
     display: inline-block;
     img {
-      background-color: orange;
-      // height: 80px;
       height: auto;
-      width: 7rem;
-      margin-top: -20px;
+      width: 25vh;
     }
   }
 }
@@ -76,9 +77,9 @@ Navbar styles
 .brand-title {
   font-stretch: extra-expanded;
   font-size: 50px;
-  color: rgb(246, 163, 8);
+  color: #f54242;
   &:hover {
-    color: blue;
+    color: whitesmoke;
     text-decoration: none;
   }
 }
