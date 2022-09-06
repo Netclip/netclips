@@ -10,7 +10,6 @@ function VideoComments(props) {
   const id = props.id;
 
   const [comment, setComments] = useState([]);
-  const [content, setContent] = useState('');
   const axios = require('axios');
 
   const getComments = async () => {
