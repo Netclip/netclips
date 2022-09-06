@@ -1,5 +1,6 @@
 package com.netclip.netclips.service.impl;
 
+import com.netclip.netclips.domain.Comment;
 import com.netclip.netclips.domain.Video;
 import com.netclip.netclips.domain.VideoUser;
 import com.netclip.netclips.repository.VideoUserRepository;
@@ -7,6 +8,7 @@ import com.netclip.netclips.service.VideoUserService;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.hibernate.validator.internal.engine.ValidatorImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -113,16 +115,52 @@ public class VideoUserServiceImpl implements VideoUserService {
 
     @Override
     public VideoUser removeLikedVideo(VideoUser videoUser, Video video) {
-        Set<Video> likedVideos = videoUser.getLikedVideos();
-        likedVideos.remove(video);
+        videoUser.getLikedVideos().remove(video);
         videoUserRepository.save(videoUser);
         return videoUser;
     }
 
     @Override
     public VideoUser removeDislikedVideo(VideoUser videoUser, Video video) {
-        Set<Video> dislikedVideos = videoUser.getVideosDisliked();
-        dislikedVideos.remove(video);
+        videoUser.getVideosDisliked().remove(video);
+        videoUserRepository.save(videoUser);
+        return videoUser;
+    }
+
+    @Override
+    public boolean isLikedComment(VideoUser videoUser, Comment comment) {
+        return videoUser.getLikedComments().contains(comment);
+    }
+
+    @Override
+    public boolean isDislikedComment(VideoUser videoUser, Comment comment) {
+        return videoUser.getDislikedComments().contains(comment);
+    }
+
+    @Override
+    public VideoUser removeLikedComment(VideoUser videoUser, Comment comment) {
+        videoUser.getLikedComments().remove(comment);
+        videoUserRepository.save(videoUser);
+        return videoUser;
+    }
+
+    @Override
+    public VideoUser removeDislikedComment(VideoUser videoUser, Comment comment) {
+        videoUser.getDislikedComments().remove(comment);
+        videoUserRepository.save(videoUser);
+        return videoUser;
+    }
+
+    @Override
+    public VideoUser addLikedComment(VideoUser videoUser, Comment comment) {
+        videoUser.addLikedComments(comment);
+        videoUserRepository.save(videoUser);
+        return videoUser;
+    }
+
+    @Override
+    public VideoUser addDislikedComment(VideoUser videoUser, Comment comment) {
+        videoUser.addDislikedComments(comment);
         videoUserRepository.save(videoUser);
         return videoUser;
     }

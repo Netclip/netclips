@@ -1,5 +1,6 @@
 package com.netclip.netclips.web.rest;
 
+import com.netclip.netclips.domain.Comment;
 import com.netclip.netclips.domain.Video;
 import com.netclip.netclips.domain.VideoUser;
 import com.netclip.netclips.repository.VideoUserRepository;
@@ -73,6 +74,17 @@ public class VideoUserResource {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(userRes.get().getVideos(), HttpStatus.OK);
+    }
+
+    @GetMapping("/video-user/{id}/comments")
+    @Transactional
+    public ResponseEntity<Set<Comment>> getUserComment(@PathVariable Long id) {
+        log.debug("REST request to get user videos : {}", id);
+        Optional<VideoUser> userRes = videoUserRepository.findByInternalUser_Id(id);
+        if (userRes.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(userRes.get().getComments(), HttpStatus.OK);
     }
 
     /**

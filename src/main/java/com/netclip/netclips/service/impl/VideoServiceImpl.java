@@ -54,9 +54,7 @@ public class VideoServiceImpl implements VideoService {
 
     public Video updateVideoComment(Comment comment, Video video) {
         Set<Comment> comments = video.getComments();
-        comments.remove(comment);
         comments.add(comment);
-        video.setComments(comments);
         this.update(video);
         return video;
     }

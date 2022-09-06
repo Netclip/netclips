@@ -45,7 +45,7 @@ export const createEntity = createAsyncThunk(
 export const updateEntity = createAsyncThunk(
   'comment/update_entity',
   async (entity: IComment, thunkAPI) => {
-    const result = await axios.put<IComment>(`${apiUrl}/${entity.id}`, cleanEntity(entity));
+    const result = await axios.put<IComment>(`${apiUrl}/${entity.id}`, cleanEntity(entity), { params: { video_id: entity.video.id } });
     thunkAPI.dispatch(getEntities({}));
     return result;
   },

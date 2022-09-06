@@ -1,9 +1,12 @@
 package com.netclip.netclips.service.impl;
 
 import com.netclip.netclips.domain.Comment;
+import com.netclip.netclips.domain.VideoUser;
 import com.netclip.netclips.repository.CommentRepository;
 import com.netclip.netclips.service.CommentService;
+import com.netclip.netclips.service.VideoUserService;
 import com.netclip.netclips.service.dto.CommentDTO;
+import com.netclip.netclips.service.dto.VideoDTO;
 import com.netclip.netclips.service.mapper.CommentMapper;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +29,12 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
 
-    public CommentServiceImpl(CommentRepository commentRepository, CommentMapper commentMapper) {
+    private final VideoUserService videoUserService;
+
+    public CommentServiceImpl(CommentRepository commentRepository, CommentMapper commentMapper, VideoUserService videoUserService) {
         this.commentRepository = commentRepository;
         this.commentMapper = commentMapper;
+        this.videoUserService = videoUserService;
     }
 
     @Override
@@ -103,5 +109,41 @@ public class CommentServiceImpl implements CommentService {
     public void delete(Long id) {
         log.debug("Request to delete Comment : {}", id);
         commentRepository.deleteById(id);
+    }
+
+    @Override
+    public CommentDTO likeComment(Comment comment, VideoUser user) {
+        Long commentId = comment.getId();
+        if (videoUserService.isLikedComment(user, comment)) {
+            commentRepository.decrementLikes(commentId);
+            videoUserService.removeLikedComment(user, comment);
+        } else if (videoUserService.isDislikedComment(user, comment)) {
+            commentRepository.decrementDislikes(commentId);
+            videoUserService.removeDislikedComment(user, comment);
+            commentRepository.incrementLikes(commentId);
+            videoUserService.addLikedComment(user, comment);
+        } else {
+            commentRepository.incrementLikes(commentId);
+            videoUserService.addLikedComment(user, comment);
+        }
+        return new CommentDTO(comment);
+    }
+
+    @Override
+    public CommentDTO dislikeComment(Comment comment, VideoUser user) {
+        Long commentId = comment.getId();
+        if (videoUserService.isDislikedComment(user, comment)) {
+            commentRepository.decrementDislikes(commentId);
+            videoUserService.removeDislikedComment(user, comment);
+        } else if (videoUserService.isLikedComment(user, comment)) {
+            commentRepository.decrementLikes(commentId);
+            videoUserService.removeLikedComment(user, comment);
+            commentRepository.incrementDislikes(commentId);
+            videoUserService.addDislikedComment(user, comment);
+        } else {
+            commentRepository.incrementDislikes(commentId);
+            videoUserService.addDislikedComment(user, comment);
+        }
+        return new CommentDTO(comment);
     }
 }
