@@ -9,7 +9,7 @@ export const SearchBar = () => {
         // onChange={(e) => props.function(e.target.value)}
         className="searchbar"
         type="text"
-        placeholder="Enter text here..."
+        placeholder="Filter Videos"
         style={{ width: '40rem' }}
       />
     </div>

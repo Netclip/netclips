@@ -4,7 +4,7 @@ import './videoPlayer.scss';
 
 const VideoPlayer = ({ url }) => {
   return (
-    <div>
+    <div className="centered">
       <ReactPlayer controls={true} url={url} width="100%" height="470px" />
       {/* <iframe
         width="100%"
