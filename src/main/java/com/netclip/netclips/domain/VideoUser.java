@@ -57,6 +57,26 @@ public class VideoUser implements Serializable {
     @JsonIgnoreProperties(value = { "comments", "uploader" }, allowSetters = true)
     private Set<Video> videosDisliked = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(
+        name = "rel_video_user__liked_comments",
+        joinColumns = @JoinColumn(name = "video_user_id"),
+        inverseJoinColumns = @JoinColumn(name = "liked_comments_id")
+    )
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "videoUser", "video" }, allowSetters = true)
+    private Set<Comment> likedComments = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+        name = "rel_video_user__disliked_comments",
+        joinColumns = @JoinColumn(name = "video_user_id"),
+        inverseJoinColumns = @JoinColumn(name = "disliked_comments_id")
+    )
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "videoUser", "video" }, allowSetters = true)
+    private Set<Comment> dislikedComments = new HashSet<>();
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public VideoUser(User user) {
         this.id = user.getId();
@@ -196,6 +216,52 @@ public class VideoUser implements Serializable {
 
     public VideoUser removeVideosDisliked(Video video) {
         this.videosDisliked.remove(video);
+        return this;
+    }
+
+    public Set<Comment> getLikedComments() {
+        return this.likedComments;
+    }
+
+    public void setLikedComments(Set<Comment> comments) {
+        this.likedComments = comments;
+    }
+
+    public VideoUser likedComments(Set<Comment> comments) {
+        this.setLikedComments(comments);
+        return this;
+    }
+
+    public VideoUser addLikedComments(Comment comment) {
+        this.likedComments.add(comment);
+        return this;
+    }
+
+    public VideoUser removeLikedComments(Comment comment) {
+        this.likedComments.remove(comment);
+        return this;
+    }
+
+    public Set<Comment> getDislikedComments() {
+        return this.dislikedComments;
+    }
+
+    public void setDislikedComments(Set<Comment> comments) {
+        this.dislikedComments = comments;
+    }
+
+    public VideoUser dislikedComments(Set<Comment> comments) {
+        this.setDislikedComments(comments);
+        return this;
+    }
+
+    public VideoUser addDislikedComments(Comment comment) {
+        this.dislikedComments.add(comment);
+        return this;
+    }
+
+    public VideoUser removeDislikedComments(Comment comment) {
+        this.dislikedComments.remove(comment);
         return this;
     }
 

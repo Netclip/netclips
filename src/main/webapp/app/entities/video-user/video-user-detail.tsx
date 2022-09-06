@@ -52,6 +52,28 @@ export const VideoUserDetail = () => {
                 ))
               : null}
           </dd>
+          <dt>Liked Comments</dt>
+          <dd>
+            {videoUserEntity.likedComments
+              ? videoUserEntity.likedComments.map((val, i) => (
+                  <span key={val.id}>
+                    <a>{val.id}</a>
+                    {videoUserEntity.likedComments && i === videoUserEntity.likedComments.length - 1 ? '' : ', '}
+                  </span>
+                ))
+              : null}
+          </dd>
+          <dt>Disliked Comments</dt>
+          <dd>
+            {videoUserEntity.dislikedComments
+              ? videoUserEntity.dislikedComments.map((val, i) => (
+                  <span key={val.id}>
+                    <a>{val.id}</a>
+                    {videoUserEntity.dislikedComments && i === videoUserEntity.dislikedComments.length - 1 ? '' : ', '}
+                  </span>
+                ))
+              : null}
+          </dd>
         </dl>
         <Button tag={Link} to="/video-user" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" /> <span className="d-none d-md-inline">Back</span>

@@ -1,6 +1,7 @@
 package com.netclip.netclips.service;
 
 import com.netclip.netclips.domain.Comment;
+import com.netclip.netclips.domain.VideoUser;
 import com.netclip.netclips.service.dto.CommentDTO;
 import java.util.List;
 import java.util.Optional;
@@ -59,4 +60,7 @@ public interface CommentService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    CommentDTO likeComment(Comment comment, VideoUser user);
+    CommentDTO dislikeComment(Comment comment, VideoUser user);
 }

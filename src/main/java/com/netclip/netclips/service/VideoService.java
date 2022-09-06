@@ -4,6 +4,7 @@ import com.netclip.netclips.domain.Comment;
 import com.netclip.netclips.domain.User;
 import com.netclip.netclips.domain.Video;
 import com.netclip.netclips.domain.VideoUser;
+import com.netclip.netclips.service.dto.VideoDTO;
 import com.netclip.netclips.service.dto.VideoPreviewDTO;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -61,6 +62,8 @@ public interface VideoService {
      */
     Optional<Video> findVideoByContentKey(String contentRef);
 
+    Video getVideoById(Long videoId);
+
     Video updateVideoComment(Comment comment, Video video);
 
     Video uploadThumbnail(Video video, MultipartFile file);
@@ -68,6 +71,10 @@ public interface VideoService {
     Page<VideoPreviewDTO> getVideoPreviews(int pageNo, int pageSize, String sortBy);
 
     VideoPreviewDTO videoToPreviewDTOWithPresignedThumbnail(Video video);
+
+    VideoDTO likeVideo(Video video, VideoUser user);
+
+    VideoDTO dislikeVideo(Video video, VideoUser user);
 
     /**
      * Delete the "id" video.

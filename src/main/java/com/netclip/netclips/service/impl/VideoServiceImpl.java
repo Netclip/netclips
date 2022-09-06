@@ -3,9 +3,12 @@ package com.netclip.netclips.service.impl;
 import com.netclip.netclips.domain.Comment;
 import com.netclip.netclips.domain.User;
 import com.netclip.netclips.domain.Video;
+import com.netclip.netclips.domain.VideoUser;
 import com.netclip.netclips.repository.VideoRepository;
 import com.netclip.netclips.service.S3Service;
 import com.netclip.netclips.service.VideoService;
+import com.netclip.netclips.service.VideoUserService;
+import com.netclip.netclips.service.dto.VideoDTO;
 import com.netclip.netclips.service.dto.VideoPreviewDTO;
 import com.netclip.netclips.service.mapper.VideoMapper;
 import java.util.ArrayList;
@@ -26,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 public class VideoServiceImpl implements VideoService {
 
+    private final String defaultThumbnailKey = "netclips/img/1662349353115-thumbnail-placeholder.jpg";
     private final Logger log = LoggerFactory.getLogger(VideoServiceImpl.class);
 
     @Autowired
@@ -35,17 +39,23 @@ public class VideoServiceImpl implements VideoService {
 
     private final S3Service s3Service;
 
-    public VideoServiceImpl(VideoRepository videoRepository, VideoMapper videoMapper, S3Service s3Service) {
+    private final VideoUserService videoUserService;
+
+    public VideoServiceImpl(
+        VideoRepository videoRepository,
+        VideoMapper videoMapper,
+        S3Service s3Service,
+        VideoUserService videoUserService
+    ) {
         this.videoRepository = videoRepository;
         this.videoMapper = videoMapper;
         this.s3Service = s3Service;
+        this.videoUserService = videoUserService;
     }
 
     public Video updateVideoComment(Comment comment, Video video) {
         Set<Comment> comments = video.getComments();
-        comments.remove(comment);
         comments.add(comment);
-        video.setComments(comments);
         this.update(video);
         return video;
     }
@@ -131,6 +141,11 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
+    public Video getVideoById(Long videoId) {
+        return videoRepository.findById(videoId).orElseThrow();
+    }
+
+    @Override
     public void delete(Long id) {
         log.debug("Request to delete Video : {}", id);
         videoRepository.deleteById(id);
@@ -139,8 +154,49 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public VideoPreviewDTO videoToPreviewDTOWithPresignedThumbnail(Video video) {
         VideoPreviewDTO res = videoMapper.videoToPreviewDTO(video);
-        res.setThumbnailRef(s3Service.generatePresignedUrl(video.getThumbnailRef()));
+        if (video.getThumbnailRef().equals("") || video.getThumbnailRef() == null) {
+            res.setThumbnailRef(s3Service.generatePresignedUrl(defaultThumbnailKey));
+        } else {
+            res.setThumbnailRef(s3Service.generatePresignedUrl(video.getThumbnailRef()));
+        }
+
         return res;
+    }
+
+    @Override
+    public VideoDTO likeVideo(Video video, VideoUser user) {
+        Long vidId = video.getId();
+        if (videoUserService.isLikedVideo(user, video)) {
+            videoRepository.decrementLikes(vidId);
+            videoUserService.removeLikedVideo(user, video);
+        } else if (videoUserService.isDislikedVideo(user, video)) {
+            videoRepository.decrementDislikes(vidId);
+            videoUserService.removeDislikedVideo(user, video);
+            videoRepository.incrementLikes(vidId);
+            videoUserService.addLikedVideo(user, video);
+        } else {
+            videoRepository.incrementLikes(vidId);
+            videoUserService.addLikedVideo(user, video);
+        }
+        return new VideoDTO(video);
+    }
+
+    @Override
+    public VideoDTO dislikeVideo(Video video, VideoUser user) {
+        Long vidId = video.getId();
+        if (videoUserService.isDislikedVideo(user, video)) {
+            videoRepository.decrementDislikes(vidId);
+            videoUserService.removeDislikedVideo(user, video);
+        } else if (videoUserService.isLikedVideo(user, video)) {
+            videoRepository.decrementLikes(vidId);
+            videoUserService.removeLikedVideo(user, video);
+            videoRepository.incrementDislikes(vidId);
+            videoUserService.addDislikedVideo(user, video);
+        } else {
+            videoRepository.incrementDislikes(vidId);
+            videoUserService.addDislikedVideo(user, video);
+        }
+        return new VideoDTO(video);
     }
 
     @Override

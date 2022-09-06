@@ -53,6 +53,7 @@ import tech.jhipster.web.util.ResponseUtil;
 public class VideoResource {
 
     private final Logger log = LoggerFactory.getLogger(VideoResource.class);
+
     private static final String ENTITY_NAME = "video";
 
     @Autowired
@@ -67,6 +68,7 @@ public class VideoResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    @Autowired
     private final VideoService videoService;
 
     private final VideoRepository videoRepository;
@@ -355,5 +357,29 @@ public class VideoResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @PutMapping("/video/like")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    @Transactional
+    public ResponseEntity<VideoDTO> likeVideo(@RequestParam(name = "id") Long id, Authentication auth) {
+        Optional<Video> videoRes = videoService.findOne(id);
+        Optional<VideoUser> userRes = videoUserService.findByUserLogin(auth.getName());
+        if (videoRes.isEmpty()) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+        return new ResponseEntity<>(videoService.likeVideo(videoRes.get(), userRes.get()), HttpStatus.OK);
+    }
+
+    @PutMapping("/video/dislike")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    @Transactional
+    public ResponseEntity<VideoDTO> dislikeVideo(@RequestParam(name = "id") Long id, Authentication auth) {
+        Optional<Video> videoRes = videoService.findOne(id);
+        Optional<VideoUser> userRes = videoUserService.findByUserLogin(auth.getName());
+        if (videoRes.isEmpty()) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+        return new ResponseEntity<>(videoService.dislikeVideo(videoRes.get(), userRes.get()), HttpStatus.OK);
     }
 }
