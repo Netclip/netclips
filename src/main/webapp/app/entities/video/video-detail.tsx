@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Button, Row, Col } from 'reactstrap';
+import { Button, Row, Col, Card } from 'reactstrap';
 import { TextFormat } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -138,29 +138,46 @@ export const VideoDetail = () => {
 
   const videoEntity = useAppSelector(state => state.video.entity);
   return (
-    <div className="videoPgContainer">
-      <div id="uploaderContainer">{/* <sub id="uploaderText">Video Uploader: {videoEntity.uploader}</sub> */}</div>
+    <Row className="rowContainer">
+      <div className="videoPgContainer">
+        <div id="uploaderContainer">{/* <sub id="uploaderText">Video Uploader: {videoEntity.uploader}</sub> */}</div>
+        <Row className="videoDetailsContainer">
+          <Col className="video_Col" sm="6">
+            <h1>{videoEntity.title}</h1>
+            <div>{<GetVideos id={id} />}</div>
+          </Col>
+          <Col sm="4">
+            <p>Description: {videoEntity.description}</p>
+            <div id="likeButtonsContainer">
+              <Like
+                function={fetchLikes}
+                className="button"
+                text={'Likes'}
+                icon={'heart'}
+                count={likeCount}
+                conditional={likeButtonClicked}
+              />
 
-      <h1>{videoEntity.title}</h1>
-      <div>{<GetVideos id={id} />}</div>
+              <Like
+                function={fetchDislikes}
+                className="button"
+                text={'Dislikes'}
+                icon={'trash'}
+                count={dislikeCount}
+                conditional={dislikeButtonClicked}
+              />
+            </div>
 
-      <div className="videoDetailsContainer">
-        <p>Description: {videoEntity.description}</p>
-        <div id="likeButtonsContainer">
-          <Like function={fetchLikes} className="button" text={'Likes'} icon={'heart'} count={likeCount} conditional={likeButtonClicked} />
+            <VideoComments id={id} />
+          </Col>
+          <Col sm="4"></Col>
+        </Row>
 
-          <Like
-            function={fetchDislikes}
-            className="button"
-            text={'Dislikes'}
-            icon={'trash'}
-            count={dislikeCount}
-            conditional={dislikeButtonClicked}
-          />
-        </div>
+        <Row></Row>
+
+        <Row className="videoDetailsContainer"></Row>
       </div>
-      <VideoComments id={id} />
-    </div>
+    </Row>
   );
 };
 

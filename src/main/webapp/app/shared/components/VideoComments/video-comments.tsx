@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Like from '../LikesDislikes/Likes';
 import './video-comments.scss';
 import Moment from 'react-moment';
+import { TextField } from '@mui/material';
 
 const API_URL = '/api/comments';
 
@@ -24,7 +25,7 @@ function VideoComments(props) {
   };
 
   function handleSubmit(event) {
-    event.preventDefault();
+    // event.preventDefault();
     axios
       .post(API_URL + '/post', JSON.stringify(content), {
         headers: { 'Content-Type': 'application/json; charset=UTF-8' },
@@ -38,11 +39,11 @@ function VideoComments(props) {
   }, []);
 
   return (
-    <div>
+    <div className="videoCommentsContainer">
       <div className="videoCommentsContainer">
         {/* <textarea className="comments" placeholder="write comments here"> */}
         <form onSubmit={handleSubmit}>
-          <input type="text" placeholder="Comment" onChange={e => setContent(e.target.value)} />
+          <TextField className="comments" type="text" placeholder="Comment" onChange={e => setContent(e.target.value)} />
           <br />
           <button type="submit"> Post </button>
         </form>
@@ -60,7 +61,7 @@ function VideoComments(props) {
           </div>
         </div> */}
       </div>
-      <div>
+      <div className="comment_Text">
         {comment.map((comment, index) => {
           // console.log(video);
           return (

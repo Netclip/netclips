@@ -3,7 +3,8 @@
   display: flex;
   flex-direction: column;
   margin: 0;
-  padding-top: 2rem;
+  padding-top: -20rem;
+
   // background-color: rgb(47, 47, 69);
 }
 #uploaderContainer {
@@ -18,7 +19,7 @@
 }
 h1 {
   text-align: center;
-  text-decoration: underline;
+  text-decoration: none;
   font-size: 40px;
 }
 #videoPlaceholder {
@@ -33,11 +34,12 @@ h1 {
 }
 
 .videoDetailsContainer {
+  padding: 10px;
   display: flex;
   margin-top: 1rem;
   padding-top: 0.55rem;
-  background-color: rgba(191, 11, 11, 0.303);
-  justify-content: space-between;
+  // background-color: rgba(191, 11, 11, 0.303);
+  justify-content: space-evenly;
 
   p {
     padding: 0.55rem;
