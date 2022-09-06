@@ -10,6 +10,8 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { IUser } from 'app/shared/model/user.model';
 import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
+import { IComment } from 'app/shared/model/comment.model';
+import { getEntities as getComments } from 'app/entities/comment/comment.reducer';
 import { IVideo } from 'app/shared/model/video.model';
 import { getEntities as getVideos } from 'app/entities/video/video.reducer';
 import { IVideoUser } from 'app/shared/model/video-user.model';
@@ -24,6 +26,7 @@ export const VideoUserUpdate = () => {
   const isNew = id === undefined;
 
   const users = useAppSelector(state => state.userManagement.users);
+  const comments = useAppSelector(state => state.comment.entities);
   const videos = useAppSelector(state => state.video.entities);
   const videoUserEntity = useAppSelector(state => state.videoUser.entity);
   const loading = useAppSelector(state => state.videoUser.loading);
@@ -42,6 +45,7 @@ export const VideoUserUpdate = () => {
     }
 
     dispatch(getUsers({}));
+    dispatch(getComments({}));
     dispatch(getVideos({}));
   }, []);
 
@@ -55,6 +59,8 @@ export const VideoUserUpdate = () => {
     const entity = {
       ...videoUserEntity,
       ...values,
+      likedComments: mapIdList(values.likedComments),
+      dislikedComments: mapIdList(values.dislikedComments),
       likedVideos: mapIdList(values.likedVideos),
       videosDisliked: mapIdList(values.videosDisliked),
       internalUser: users.find(it => it.id.toString() === values.internalUser.toString()),
@@ -75,6 +81,8 @@ export const VideoUserUpdate = () => {
           internalUser: videoUserEntity?.internalUser?.id,
           likedVideos: videoUserEntity?.likedVideos?.map(e => e.id.toString()),
           videosDisliked: videoUserEntity?.videosDisliked?.map(e => e.id.toString()),
+          likedComments: videoUserEntity?.likedComments?.map(e => e.id.toString()),
+          dislikedComments: videoUserEntity?.dislikedComments?.map(e => e.id.toString()),
         };
 
   return (
@@ -131,6 +139,40 @@ export const VideoUserUpdate = () => {
                 <option value="" key="0" />
                 {videos
                   ? videos.map(otherEntity => (
+                      <option value={otherEntity.id} key={otherEntity.id}>
+                        {otherEntity.id}
+                      </option>
+                    ))
+                  : null}
+              </ValidatedField>
+              <ValidatedField
+                label="Liked Comments"
+                id="video-user-likedComments"
+                data-cy="likedComments"
+                type="select"
+                multiple
+                name="likedComments"
+              >
+                <option value="" key="0" />
+                {comments
+                  ? comments.map(otherEntity => (
+                      <option value={otherEntity.id} key={otherEntity.id}>
+                        {otherEntity.id}
+                      </option>
+                    ))
+                  : null}
+              </ValidatedField>
+              <ValidatedField
+                label="Disliked Comments"
+                id="video-user-dislikedComments"
+                data-cy="dislikedComments"
+                type="select"
+                multiple
+                name="dislikedComments"
+              >
+                <option value="" key="0" />
+                {comments
+                  ? comments.map(otherEntity => (
                       <option value={otherEntity.id} key={otherEntity.id}>
                         {otherEntity.id}
                       </option>

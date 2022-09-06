@@ -44,6 +44,22 @@
       "ownerSide": true,
       "relationshipName": "videosDisliked",
       "relationshipType": "many-to-many"
+    },
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "comment",
+      "otherEntityRelationshipName": "likedUsers",
+      "ownerSide": true,
+      "relationshipName": "likedComments",
+      "relationshipType": "many-to-many"
+    },
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "comment",
+      "otherEntityRelationshipName": "dislikedUsers",
+      "ownerSide": true,
+      "relationshipName": "dislikedComments",
+      "relationshipType": "many-to-many"
     }
   ],
   "service": "serviceImpl"

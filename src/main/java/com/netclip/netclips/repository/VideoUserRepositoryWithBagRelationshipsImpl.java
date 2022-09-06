@@ -22,7 +22,11 @@ public class VideoUserRepositoryWithBagRelationshipsImpl implements VideoUserRep
 
     @Override
     public Optional<VideoUser> fetchBagRelationships(Optional<VideoUser> videoUser) {
-        return videoUser.map(this::fetchLikedVideos).map(this::fetchVideosDisliked);
+        return videoUser
+            .map(this::fetchLikedVideos)
+            .map(this::fetchVideosDisliked)
+            .map(this::fetchLikedComments)
+            .map(this::fetchDislikedComments);
     }
 
     @Override
@@ -32,7 +36,13 @@ public class VideoUserRepositoryWithBagRelationshipsImpl implements VideoUserRep
 
     @Override
     public List<VideoUser> fetchBagRelationships(List<VideoUser> videoUsers) {
-        return Optional.of(videoUsers).map(this::fetchLikedVideos).map(this::fetchVideosDisliked).orElse(Collections.emptyList());
+        return Optional
+            .of(videoUsers)
+            .map(this::fetchLikedVideos)
+            .map(this::fetchVideosDisliked)
+            .map(this::fetchLikedComments)
+            .map(this::fetchDislikedComments)
+            .orElse(Collections.emptyList());
     }
 
     VideoUser fetchLikedVideos(VideoUser result) {
@@ -78,6 +88,58 @@ public class VideoUserRepositoryWithBagRelationshipsImpl implements VideoUserRep
         List<VideoUser> result = entityManager
             .createQuery(
                 "select distinct videoUser from VideoUser videoUser left join fetch videoUser.videosDisliked where videoUser in :videoUsers",
+                VideoUser.class
+            )
+            .setParameter("videoUsers", videoUsers)
+            .setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
+            .getResultList();
+        Collections.sort(result, (o1, o2) -> Integer.compare(order.get(o1.getId()), order.get(o2.getId())));
+        return result;
+    }
+
+    VideoUser fetchLikedComments(VideoUser result) {
+        return entityManager
+            .createQuery(
+                "select videoUser from VideoUser videoUser left join fetch videoUser.likedComments where videoUser is :videoUser",
+                VideoUser.class
+            )
+            .setParameter("videoUser", result)
+            .setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
+            .getSingleResult();
+    }
+
+    List<VideoUser> fetchLikedComments(List<VideoUser> videoUsers) {
+        HashMap<Object, Integer> order = new HashMap<>();
+        IntStream.range(0, videoUsers.size()).forEach(index -> order.put(videoUsers.get(index).getId(), index));
+        List<VideoUser> result = entityManager
+            .createQuery(
+                "select distinct videoUser from VideoUser videoUser left join fetch videoUser.likedComments where videoUser in :videoUsers",
+                VideoUser.class
+            )
+            .setParameter("videoUsers", videoUsers)
+            .setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
+            .getResultList();
+        Collections.sort(result, (o1, o2) -> Integer.compare(order.get(o1.getId()), order.get(o2.getId())));
+        return result;
+    }
+
+    VideoUser fetchDislikedComments(VideoUser result) {
+        return entityManager
+            .createQuery(
+                "select videoUser from VideoUser videoUser left join fetch videoUser.dislikedComments where videoUser is :videoUser",
+                VideoUser.class
+            )
+            .setParameter("videoUser", result)
+            .setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
+            .getSingleResult();
+    }
+
+    List<VideoUser> fetchDislikedComments(List<VideoUser> videoUsers) {
+        HashMap<Object, Integer> order = new HashMap<>();
+        IntStream.range(0, videoUsers.size()).forEach(index -> order.put(videoUsers.get(index).getId(), index));
+        List<VideoUser> result = entityManager
+            .createQuery(
+                "select distinct videoUser from VideoUser videoUser left join fetch videoUser.dislikedComments where videoUser in :videoUsers",
                 VideoUser.class
             )
             .setParameter("videoUsers", videoUsers)

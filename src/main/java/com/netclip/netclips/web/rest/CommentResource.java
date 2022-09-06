@@ -6,10 +6,12 @@ import com.netclip.netclips.domain.Video;
 import com.netclip.netclips.domain.VideoUser;
 import com.netclip.netclips.repository.CommentRepository;
 import com.netclip.netclips.repository.VideoRepository;
+import com.netclip.netclips.security.AuthoritiesConstants;
 import com.netclip.netclips.service.CommentService;
 import com.netclip.netclips.service.VideoService;
 import com.netclip.netclips.service.VideoUserService;
 import com.netclip.netclips.service.dto.CommentDTO;
+import com.netclip.netclips.service.dto.VideoDTO;
 import com.netclip.netclips.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -25,7 +27,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -149,6 +153,7 @@ public class CommentResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/comments/{id}")
+    @Transactional
     public ResponseEntity<Comment> updateComment(
         @PathVariable(value = "id", required = false) final Long commentId,
         @RequestBody Comment comment,
@@ -253,5 +258,29 @@ public class CommentResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @PutMapping("/comment/like")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    @Transactional
+    public ResponseEntity<CommentDTO> likeComment(@RequestParam(name = "id") Long id, Authentication auth) {
+        Optional<Comment> commentRes = commentService.findOne(id);
+        Optional<VideoUser> userRes = videoUserService.findByUserLogin(auth.getName());
+        if (commentRes.isEmpty()) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+        return new ResponseEntity<>(commentService.likeComment(commentRes.get(), userRes.get()), HttpStatus.OK);
+    }
+
+    @PutMapping("/comment/dislike")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    @Transactional
+    public ResponseEntity<CommentDTO> dislikeComment(@RequestParam(name = "id") Long id, Authentication auth) {
+        Optional<Comment> commentRes = commentService.findOne(id);
+        Optional<VideoUser> userRes = videoUserService.findByUserLogin(auth.getName());
+        if (commentRes.isEmpty()) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+        return new ResponseEntity<>(commentService.dislikeComment(commentRes.get(), userRes.get()), HttpStatus.OK);
     }
 }

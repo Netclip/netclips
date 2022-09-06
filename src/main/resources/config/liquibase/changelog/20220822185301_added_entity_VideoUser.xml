@@ -44,6 +44,28 @@
         </createTable>
 
         <addPrimaryKey columnNames="video_user_id, videos_disliked_id" tableName="rel_video_user__videos_disliked"/>
+
+        <createTable tableName="rel_video_user__liked_comments">
+            <column name="liked_comments_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="video_user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="video_user_id, liked_comments_id" tableName="rel_video_user__liked_comments"/>
+
+        <createTable tableName="rel_video_user__disliked_comments">
+            <column name="disliked_comments_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="video_user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="video_user_id, disliked_comments_id" tableName="rel_video_user__disliked_comments"/>
     </changeSet>
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->

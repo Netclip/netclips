@@ -35,7 +35,10 @@ public class Comment implements Serializable {
     private Long dislikes;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "internalUser", "comments", "videos", "likedVideos", "videosDisliked" }, allowSetters = true)
+    @JsonIgnoreProperties(
+        value = { "internalUser", "comments", "videos", "likedVideos", "videosDisliked", "likedComments", "dislikedComments" },
+        allowSetters = true
+    )
     private VideoUser videoUser;
 
     @ManyToOne

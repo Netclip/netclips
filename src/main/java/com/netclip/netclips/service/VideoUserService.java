@@ -1,5 +1,6 @@
 package com.netclip.netclips.service;
 
+import com.netclip.netclips.domain.Comment;
 import com.netclip.netclips.domain.Video;
 import com.netclip.netclips.domain.VideoUser;
 import java.util.List;
@@ -60,9 +61,29 @@ public interface VideoUserService {
 
     VideoUser deleteVideoFromSet(VideoUser videoUser, Video video);
 
+    VideoUser addLikedVideo(VideoUser videoUser, Video video);
+
+    VideoUser addDislikedVideo(VideoUser videoUser, Video video);
+
+    boolean isLikedVideo(VideoUser videoUser, Video video);
+
+    boolean isDislikedVideo(VideoUser videoUser, Video video);
+
     VideoUser removeLikedVideo(VideoUser videoUser, Video video);
 
     VideoUser removeDislikedVideo(VideoUser videoUser, Video video);
+
+    boolean isLikedComment(VideoUser videoUser, Comment comment);
+
+    boolean isDislikedComment(VideoUser videoUser, Comment comment);
+
+    VideoUser removeLikedComment(VideoUser videoUser, Comment comment);
+
+    VideoUser removeDislikedComment(VideoUser videoUser, Comment comment);
+
+    VideoUser addLikedComment(VideoUser videoUser, Comment comment);
+
+    VideoUser addDislikedComment(VideoUser videoUser, Comment comment);
 
     Optional<VideoUser> findByUserLogin(String login);
 

@@ -1,5 +1,6 @@
 package com.netclip.netclips.service.dto;
 
+import com.netclip.netclips.domain.Comment;
 import com.netclip.netclips.domain.VideoUser;
 import java.time.Instant;
 
@@ -32,6 +33,17 @@ public class CommentDTO {
         this.uploaderId = uploaderId;
         this.uploader = uploader;
         this.videoId = videoId;
+    }
+
+    public CommentDTO(Comment comment) {
+        this.id = comment.getId();
+        this.content = comment.getContent();
+        this.timeStamp = comment.getTimeStamp();
+        this.likes = comment.getLikes();
+        this.dislikes = comment.getDislikes();
+        this.uploaderId = comment.getVideoUser().getInternalUser().getId();
+        this.uploader = comment.getVideoUser().getInternalUser().getLogin();
+        this.videoId = comment.getVideo().getId();
     }
 
     public Long getId() {
