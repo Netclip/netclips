@@ -53,6 +53,7 @@ import tech.jhipster.web.util.ResponseUtil;
 public class VideoResource {
 
     private final Logger log = LoggerFactory.getLogger(VideoResource.class);
+
     private static final String ENTITY_NAME = "video";
 
     @Autowired
@@ -67,6 +68,7 @@ public class VideoResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    @Autowired
     private final VideoService videoService;
 
     private final VideoRepository videoRepository;

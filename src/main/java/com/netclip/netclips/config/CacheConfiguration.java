@@ -56,6 +56,8 @@ public class CacheConfiguration {
             createCache(cm, com.netclip.netclips.domain.Comment.class.getName());
             createCache(cm, com.netclip.netclips.domain.VideoUser.class.getName() + ".likedVideos");
             createCache(cm, com.netclip.netclips.domain.VideoUser.class.getName() + ".videosDisliked");
+            createCache(cm, com.netclip.netclips.domain.VideoUser.class.getName() + ".likedComments");
+            createCache(cm, com.netclip.netclips.domain.VideoUser.class.getName() + ".dislikedComments");
             // jhipster-needle-ehcache-add-entry
         };
     }

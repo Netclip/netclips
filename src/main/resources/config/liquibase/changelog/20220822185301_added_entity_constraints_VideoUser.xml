@@ -37,5 +37,29 @@
                                  constraintName="fk_rel_video_user__videos_disliked__videos_disliked_id"
                                  referencedColumnNames="id"
                                  referencedTableName="video"/>
+
+        <addForeignKeyConstraint baseColumnNames="video_user_id"
+                                 baseTableName="rel_video_user__liked_comments"
+                                 constraintName="fk_rel_video_user__liked_comments__video_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="video_user"/>
+
+        <addForeignKeyConstraint baseColumnNames="liked_comments_id"
+                                 baseTableName="rel_video_user__liked_comments"
+                                 constraintName="fk_rel_video_user__liked_comments__liked_comments_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="comment"/>
+
+        <addForeignKeyConstraint baseColumnNames="video_user_id"
+                                 baseTableName="rel_video_user__disliked_comments"
+                                 constraintName="fk_rel_video_user__disliked_comments__video_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="video_user"/>
+
+        <addForeignKeyConstraint baseColumnNames="disliked_comments_id"
+                                 baseTableName="rel_video_user__disliked_comments"
+                                 constraintName="fk_rel_video_user__disliked_comments__disliked_comments_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="comment"/>
     </changeSet>
 </databaseChangeLog>

@@ -50,6 +50,8 @@ export const VideoUser = () => {
                 <th>Internal User</th>
                 <th>Liked Videos</th>
                 <th>Videos Disliked</th>
+                <th>Liked Comments</th>
+                <th>Disliked Comments</th>
                 <th />
               </tr>
             </thead>
@@ -78,6 +80,26 @@ export const VideoUser = () => {
                           <span key={j}>
                             <Link to={`/video/${val.id}`}>{val.id}</Link>
                             {j === videoUser.videosDisliked.length - 1 ? '' : ', '}
+                          </span>
+                        ))
+                      : null}
+                  </td>
+                  <td>
+                    {videoUser.likedComments
+                      ? videoUser.likedComments.map((val, j) => (
+                          <span key={j}>
+                            <Link to={`/comment/${val.id}`}>{val.id}</Link>
+                            {j === videoUser.likedComments.length - 1 ? '' : ', '}
+                          </span>
+                        ))
+                      : null}
+                  </td>
+                  <td>
+                    {videoUser.dislikedComments
+                      ? videoUser.dislikedComments.map((val, j) => (
+                          <span key={j}>
+                            <Link to={`/comment/${val.id}`}>{val.id}</Link>
+                            {j === videoUser.dislikedComments.length - 1 ? '' : ', '}
                           </span>
                         ))
                       : null}

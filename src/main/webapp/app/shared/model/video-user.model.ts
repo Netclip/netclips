@@ -9,6 +9,8 @@ export interface IVideoUser {
   videos?: IVideo[] | null;
   likedVideos?: IVideo[] | null;
   videosDisliked?: IVideo[] | null;
+  likedComments?: IComment[] | null;
+  dislikedComments?: IComment[] | null;
 }
 
 export const defaultValue: Readonly<IVideoUser> = {};
