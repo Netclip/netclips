@@ -29,6 +29,9 @@ public class VideoMapper {
         res.setContentRef(uploadDTO.getFileUrl());
         Optional<VideoUser> user = userRepo.findByInternalUser_Login(uploadDTO.getUploaderLogin());
         user.ifPresent(res::setUploader);
+        res.setViewCount(0);
+        res.setLikes(0L);
+        res.setDislikes(0L);
         return res;
     }
 
