@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 public class VideoServiceImpl implements VideoService {
 
+    private final String defaultThumbnailKey = "netclips/img/1662349353115-thumbnail-placeholder.jpg";
     private final Logger log = LoggerFactory.getLogger(VideoServiceImpl.class);
 
     @Autowired
@@ -153,7 +154,12 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public VideoPreviewDTO videoToPreviewDTOWithPresignedThumbnail(Video video) {
         VideoPreviewDTO res = videoMapper.videoToPreviewDTO(video);
-        res.setThumbnailRef(s3Service.generatePresignedUrl(video.getThumbnailRef()));
+        if (video.getThumbnailRef().equals("") || video.getThumbnailRef() == null) {
+            res.setThumbnailRef(s3Service.generatePresignedUrl(defaultThumbnailKey));
+        } else {
+            res.setThumbnailRef(s3Service.generatePresignedUrl(video.getThumbnailRef()));
+        }
+
         return res;
     }
 
