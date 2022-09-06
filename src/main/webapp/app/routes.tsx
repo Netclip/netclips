@@ -63,9 +63,9 @@ const AppRoutes = () => {
         <Route
           path="*"
           element={
-            <PrivateRoute hasAnyAuthorities={[AUTHORITIES.USER]}>
-              <EntitiesRoutes />
-            </PrivateRoute>
+            // <PrivateRoute hasAnyAuthorities={[AUTHORITIES.USER]}>
+            <EntitiesRoutes />
+            // {/* </PrivateRoute> */}
           }
         />
         <Route path="*" element={<PageNotFound />} />

@@ -141,11 +141,13 @@ export const VideoDetail = () => {
     <Row className="rowContainer">
       <div className="videoPgContainer">
         <div id="uploaderContainer">{/* <sub id="uploaderText">Video Uploader: {videoEntity.uploader}</sub> */}</div>
-
-        <h1>{videoEntity.title}</h1>
-        <div>{<GetVideos id={id} />}</div>
-
         <Row className="videoDetailsContainer">
+          <Col sm="6">
+            <Card>
+              <h1>{videoEntity.title}</h1>
+              <div>{<GetVideos id={id} />}</div>
+            </Card>
+          </Col>
           <Col sm="4">
             <Card>
               <p>Description: {videoEntity.description}</p>
@@ -169,16 +171,16 @@ export const VideoDetail = () => {
                 />
               </div>
             </Card>
-          </Col>
-        </Row>
-
-        <Row className="videoDetailsContainer">
-          <Col sm="4">
             <Card>
               <VideoComments id={id} />
             </Card>
           </Col>
+          <Col sm="4"></Col>
         </Row>
+
+        <Row></Row>
+
+        <Row className="videoDetailsContainer"></Row>
       </div>
     </Row>
   );
