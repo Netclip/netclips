@@ -159,7 +159,7 @@ export const VideoDetail = () => {
           />
         </div>
       </div>
-      <VideoComments />
+      <VideoComments id={id} />
     </div>
   );
 };

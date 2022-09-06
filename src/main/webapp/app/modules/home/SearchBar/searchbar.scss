@@ -1,10 +1,14 @@
 .searchcontainer {
   // background-color: red;
   display: flex;
-  justify-content: center;
+  justify-self: center;
   align-items: center;
   height: 4rem;
-  margin-left: 12%;
+  width: 100%;
+  margin-left: 10%;
+  margin-top: 0.5rem;
+  // margin-bottom: 2rem;
+  padding: 2rem;
 }
 .searchbar {
   height: 2.5rem;

@@ -21,7 +21,7 @@ export const Brand = () => (
       <BrandIcon />
     </NavbarBrand>
 
-    <SearchBar />
+    {/* <SearchBar /> */}
   </>
 );
 
