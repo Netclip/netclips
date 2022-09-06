@@ -54,6 +54,8 @@ public class VideoResource {
 
     private final Logger log = LoggerFactory.getLogger(VideoResource.class);
 
+    private final String defaultThumbnail = "netclips/img/1662349353115-thumbnail-placeholder.jpg";
+
     private static final String ENTITY_NAME = "video";
 
     @Autowired
@@ -116,7 +118,7 @@ public class VideoResource {
         if ((!userRoles.contains(AuthoritiesConstants.ADMIN) && (!user.getInternalUser().getLogin().equals(auth.getName())))) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        s3Service.deleteFileByFullKey(videoRes.get().getThumbnailRef());
+        //s3Service.deleteFileByFullKey(videoRes.get().getThumbnailRef());
         Video updatedVid = videoService.uploadThumbnail(videoRes.get(), file);
         VideoPreviewDTO vidDTO = new VideoPreviewDTO(updatedVid);
 
@@ -146,6 +148,7 @@ public class VideoResource {
                 .description(description)
                 .build();
             Video videoEntity = s3Service.convertUploadDTOtoVideo(upDTO);
+            videoEntity.setThumbnailRef(defaultThumbnail);
             videoRepository.save(videoEntity);
             vidUser.get().addVideos(videoEntity);
             videoUserRepository.save(vidUser.get());
