@@ -142,38 +142,33 @@ export const VideoDetail = () => {
       <div className="videoPgContainer">
         <div id="uploaderContainer">{/* <sub id="uploaderText">Video Uploader: {videoEntity.uploader}</sub> */}</div>
         <Row className="videoDetailsContainer">
-          <Col sm="6">
-            <Card>
-              <h1>{videoEntity.title}</h1>
-              <div>{<GetVideos id={id} />}</div>
-            </Card>
+          <Col className="video_Col" sm="6">
+            <h1>{videoEntity.title}</h1>
+            <div>{<GetVideos id={id} />}</div>
           </Col>
           <Col sm="4">
-            <Card>
-              <p>Description: {videoEntity.description}</p>
-              <div id="likeButtonsContainer">
-                <Like
-                  function={fetchLikes}
-                  className="button"
-                  text={'Likes'}
-                  icon={'heart'}
-                  count={likeCount}
-                  conditional={likeButtonClicked}
-                />
+            <p>Description: {videoEntity.description}</p>
+            <div id="likeButtonsContainer">
+              <Like
+                function={fetchLikes}
+                className="button"
+                text={'Likes'}
+                icon={'heart'}
+                count={likeCount}
+                conditional={likeButtonClicked}
+              />
 
-                <Like
-                  function={fetchDislikes}
-                  className="button"
-                  text={'Dislikes'}
-                  icon={'trash'}
-                  count={dislikeCount}
-                  conditional={dislikeButtonClicked}
-                />
-              </div>
-            </Card>
-            <Card>
-              <VideoComments id={id} />
-            </Card>
+              <Like
+                function={fetchDislikes}
+                className="button"
+                text={'Dislikes'}
+                icon={'trash'}
+                count={dislikeCount}
+                conditional={dislikeButtonClicked}
+              />
+            </div>
+
+            <VideoComments id={id} />
           </Col>
           <Col sm="4"></Col>
         </Row>
