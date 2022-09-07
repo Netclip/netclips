@@ -210,4 +210,18 @@ public class VideoServiceImpl implements VideoService {
         }
         return new PageImpl<>(new ArrayList<>());
     }
+
+    @Override
+    public Page<VideoPreviewDTO> getVideoPreviewsByUploader(int pageNo, int pageSize, String sortBy, Long uploaderId) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
+
+        Page<VideoPreviewDTO> pagedRes = videoRepository
+            .findAllByUploader_Id(uploaderId, pageable)
+            .map(this::videoToPreviewDTOWithPresignedThumbnail);
+
+        if (pagedRes.hasContent()) {
+            return pagedRes;
+        }
+        return new PageImpl<>(new ArrayList<>());
+    }
 }

@@ -70,6 +70,8 @@ public interface VideoService {
 
     Page<VideoPreviewDTO> getVideoPreviews(int pageNo, int pageSize, String sortBy);
 
+    Page<VideoPreviewDTO> getVideoPreviewsByUploader(int pageNo, int pageSize, String sortBy, Long uploaderId);
+
     VideoPreviewDTO videoToPreviewDTOWithPresignedThumbnail(Video video);
 
     VideoDTO likeVideo(Video video, VideoUser user);
