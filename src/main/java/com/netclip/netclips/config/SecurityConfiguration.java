@@ -92,6 +92,7 @@ public class SecurityConfiguration {
             .antMatchers("/api/videos/fetch-play-video/**").permitAll()
             .antMatchers("/api/videos/upload").hasAuthority(AuthoritiesConstants.USER)
             .antMatchers("/api/videos/thumbnail").hasAuthority(AuthoritiesConstants.USER)
+            .antMatchers("/api/video/add-view").permitAll()
             .antMatchers("/api/video/**").hasAuthority(AuthoritiesConstants.USER)
             .antMatchers("/api/comment/**").hasAuthority(AuthoritiesConstants.USER)
             .antMatchers("/api/admin/**").hasAuthority(AuthoritiesConstants.ADMIN)
