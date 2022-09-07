@@ -168,17 +168,27 @@ public class VideoServiceImpl implements VideoService {
         Long vidId = video.getId();
         if (videoUserService.isLikedVideo(user, video)) {
             videoRepository.decrementLikes(vidId);
+            video.setLikes(video.getLikes() - 1);
             videoUserService.removeLikedVideo(user, video);
         } else if (videoUserService.isDislikedVideo(user, video)) {
             videoRepository.decrementDislikes(vidId);
+            video.setDislikes(video.getDislikes() - 1);
             videoUserService.removeDislikedVideo(user, video);
+
             videoRepository.incrementLikes(vidId);
+            video.setLikes(video.getLikes() + 1);
             videoUserService.addLikedVideo(user, video);
         } else {
             videoRepository.incrementLikes(vidId);
+            video.setLikes(video.getLikes() + 1);
             videoUserService.addLikedVideo(user, video);
         }
-        return new VideoDTO(video);
+        Optional<Video> updatedVid = findOne(vidId);
+        if (updatedVid.isPresent()) {
+            return new VideoDTO(updatedVid.get());
+        }
+        return null;
+        //return new VideoDTO(video);
     }
 
     @Override
@@ -186,14 +196,19 @@ public class VideoServiceImpl implements VideoService {
         Long vidId = video.getId();
         if (videoUserService.isDislikedVideo(user, video)) {
             videoRepository.decrementDislikes(vidId);
+            video.setDislikes(video.getDislikes() - 1);
             videoUserService.removeDislikedVideo(user, video);
         } else if (videoUserService.isLikedVideo(user, video)) {
             videoRepository.decrementLikes(vidId);
+            video.setLikes(video.getLikes() - 1);
             videoUserService.removeLikedVideo(user, video);
+
             videoRepository.incrementDislikes(vidId);
+            video.setDislikes(video.getDislikes() + 1);
             videoUserService.addDislikedVideo(user, video);
         } else {
             videoRepository.incrementDislikes(vidId);
+            video.setDislikes(video.getDislikes() + 1);
             videoUserService.addDislikedVideo(user, video);
         }
         return new VideoDTO(video);
