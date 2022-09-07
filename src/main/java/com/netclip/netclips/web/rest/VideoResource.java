@@ -54,7 +54,8 @@ public class VideoResource {
 
     private final Logger log = LoggerFactory.getLogger(VideoResource.class);
 
-    private final String defaultThumbnail = "netclips/img/1662349353115-thumbnail-placeholder.jpg";
+    // TODO: Refactor - duplicate variable
+    private final String defaultThumbnail = "netclips/1662572991049-dog.png";
 
     private static final String ENTITY_NAME = "video";
 
