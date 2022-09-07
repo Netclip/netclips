@@ -385,4 +385,15 @@ public class VideoResource {
         }
         return new ResponseEntity<>(videoService.dislikeVideo(videoRes.get(), userRes.get()), HttpStatus.OK);
     }
+
+    @PutMapping("/video/add-view")
+    @Transactional
+    public ResponseEntity<String> incrementViews(@RequestParam(name = "id") Long id) {
+        Optional<Video> videoRes = videoRepository.findById(id);
+        if (videoRes.isEmpty()) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+        videoService.incrementViewCount(id);
+        return ResponseEntity.ok("Viewed");
+    }
 }

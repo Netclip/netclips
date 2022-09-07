@@ -78,6 +78,8 @@ public interface VideoService {
 
     VideoDTO dislikeVideo(Video video, VideoUser user);
 
+    void incrementViewCount(Long id);
+
     /**
      * Delete the "id" video.
      *

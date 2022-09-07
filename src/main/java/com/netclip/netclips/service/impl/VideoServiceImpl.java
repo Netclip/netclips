@@ -200,6 +200,11 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
+    public void incrementViewCount(Long id) {
+        videoRepository.incrementViewCount(id);
+    }
+
+    @Override
     public Page<VideoPreviewDTO> getVideoPreviews(int pageNo, int pageSize, String sortBy) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
 
