@@ -29,7 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 public class VideoServiceImpl implements VideoService {
 
-    private final String defaultThumbnailKey = "netclips/img/1662349353115-thumbnail-placeholder.jpg";
+    private final String defaultThumbnailKey = "netclips/1662572991049-dog.png";
     private final Logger log = LoggerFactory.getLogger(VideoServiceImpl.class);
 
     @Autowired
