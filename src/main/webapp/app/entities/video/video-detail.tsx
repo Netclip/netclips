@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Button, Row, Col, Card } from 'reactstrap';
 import { TextFormat } from 'react-jhipster';
@@ -161,12 +161,12 @@ export const VideoDetail = () => {
     // console.log('is the like button clicked? ' + likeButtonClicked);
   }, []);
 
-  useEffect(() => {
-    console.log('\nnoww is the DISLIKE button clicked? ' + dislikeButtonClicked);
-  }, [dislikeButtonClicked]);
-  useEffect(() => {
-    console.log('\nnoww is the LIKE button clicked? ' + likeButtonClicked);
-  }, [likeButtonClicked]);
+  // useEffect(() => {
+  //   console.log('\nnoww is the DISLIKE button clicked? ' + dislikeButtonClicked);
+  // }, [dislikeButtonClicked]);
+  // useEffect(() => {
+  //   console.log('\nnoww is the LIKE button clicked? ' + likeButtonClicked);
+  // }, [likeButtonClicked]);
 
   const videoEntity = useAppSelector(state => state.video.entity);
   return (
