@@ -13,6 +13,7 @@ import './videopage.scss';
 import GetVideos from 'app/shared/components/GetVideos';
 import VideoComments from 'app/shared/components/VideoComments/video-comments';
 import axios from 'axios';
+import { times } from 'lodash';
 
 export const VideoDetail = () => {
   var [likeCount, setLikeCount] = useState(0);
@@ -24,8 +25,6 @@ export const VideoDetail = () => {
   var n = urlStr.lastIndexOf('/');
   var result = urlStr.substring(n + 1);
   var [vidId, setVidId] = useState(result);
-  // var [vidId, setVidId] = useState(window.location.href.slice(-1));
-  // var [likeStatus, setLikeStatus] = useState(false);
 
   const getBearerToken = () => {
     var authToken = localStorage.getItem('jhi-authenticationToken') || sessionStorage.getItem('jhi-authenticationToken');
@@ -46,18 +45,11 @@ export const VideoDetail = () => {
 
   const fetchLikes = async () => {
     try {
-      await axios.get('api/videos', axiosConfig).then(response => {
-        var likesResults = response.data[Number.parseInt(vidId) - 1].likes;
-        console.log('this video id is -> ' + vidId);
-        console.log('video #' + vidId + ' likes= ' + likesResults);
+      await axios.get(`/api/videos/fetch-play-video/${result}`, axiosConfig).then(response => {
+        var likesResults = response.data.likes;
+        console.log('likes COUNT -> ' + likesResults);
         setLikeCount(likesResults);
-
-        setLikeButtonClicked(true);
       });
-      if (likeButtonClicked == true) {
-        setLikeCount(--likeCount);
-        setLikeButtonClicked(false);
-      }
     } catch (err) {
       console.log(err);
     }
@@ -65,66 +57,52 @@ export const VideoDetail = () => {
 
   const fetchDislikes = async () => {
     try {
-      await axios.get('api/videos', axiosConfig).then(response => {
-        var dislikesResults = response.data[Number.parseInt(vidId) - 1].dislikes;
-        console.log('this video id is -> ' + vidId);
-        console.log('video #' + vidId + ' dislikes= ' + dislikesResults);
+      await axios.get(`/api/videos/fetch-play-video/${result}`, axiosConfig).then(response => {
+        var dislikesResults = response.data.dislikes;
+        console.log('dislikes COUNT -> ' + dislikesResults);
         setDislikeCount(dislikesResults);
-
-        setdislikeButtonClicked(true);
       });
-      if (dislikeButtonClicked == true) {
-        setDislikeCount(--dislikeCount);
-        setdislikeButtonClicked(false);
-      }
     } catch (err) {
       console.log(err);
     }
-
-    useEffect(() => {
-      setLikeCount(likeCount);
-      // setLikeButtonClicked(true);
-    }, []);
   };
 
-  // const fetchData = async () => {
-  //   try {
-  //     await axios.get('api/videos', axiosConfig).then(response => {
-  //       setVidId(vidId);
-  //       var tempLikes = response.data[Number.parseInt(vidId) - 1].likes;
-  //       var tempDislikes = response.data[Number.parseInt(vidId) - 1].dislikes;
+  const handleLike = () => {
+    fetchLikes();
+    if (likeButtonClicked) {
+      setLikeButtonClicked(false);
+    } else if (!dislikeButtonClicked) {
+      setLikeButtonClicked(true);
+    } else {
+      setdislikeButtonClicked(false);
+      setLikeButtonClicked(true);
+    }
 
-  //       console.log('likes => ' + tempLikes);
-  //       console.log('dislikes => ' + tempDislikes);
-  //       console.log('video id: '+vidId)
+    try {
+      axios.put(`api/video/like/?id=${result}`);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-  //       // likeCount = tempLikes;
-  //       // dislikeCount = tempDislikes;
+  const handleDislike = () => {
+    fetchDislikes();
+    if (dislikeButtonClicked) {
+      setdislikeButtonClicked(false);
+    } else if (!likeButtonClicked) {
+      setdislikeButtonClicked(true);
+    } else {
+      setLikeButtonClicked(false);
+      setdislikeButtonClicked(true);
+      console.log('is the dislike button clicked? ' + dislikeButtonClicked);
+    }
 
-  //       setLikeCount(tempLikes);
-  //       setDislikeCount(tempDislikes);
-
-  //       console.log('likeCount: ' + likeCount);
-  //       console.log('dislikeCount: ' + dislikeCount);
-
-  //       setLikeStatus(true);
-  //     });
-
-  //     if (likeStatus == true) {
-  //       setLikeCount(--likeCount);
-  //       // setDislikeCount(--dislikeCount);
-  //       setLikeStatus(false);
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-
-  //   useEffect(() => {
-  //     setLikeCount(likeCount);
-  //     setDislikeCount(dislikeCount);
-  //   }, []);
-  //   return likeCount && dislikeCount;
-  // };
+    try {
+      axios.put(`api/video/dislike/?id=${result}`);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const dispatch = useAppDispatch();
 
@@ -134,7 +112,16 @@ export const VideoDetail = () => {
     dispatch(getEntity(id));
     fetchDislikes();
     fetchLikes();
+    console.log('is the dislike button clicked? ' + dislikeButtonClicked);
+    console.log('is the like button clicked? ' + likeButtonClicked);
   }, []);
+
+  useEffect(() => {
+    console.log('\nnoww is the DISLIKE button clicked? ' + dislikeButtonClicked);
+  }, [dislikeButtonClicked]);
+  useEffect(() => {
+    console.log('\nnoww is the LIKE button clicked? ' + likeButtonClicked);
+  }, [likeButtonClicked]);
 
   const videoEntity = useAppSelector(state => state.video.entity);
   return (
@@ -153,7 +140,7 @@ export const VideoDetail = () => {
               <p>Description: {videoEntity.description}</p>
               <div id="likeButtonsContainer">
                 <Like
-                  function={fetchLikes}
+                  function={handleLike}
                   className="button"
                   text={'Likes'}
                   icon={'heart'}
@@ -162,7 +149,7 @@ export const VideoDetail = () => {
                 />
 
                 <Like
-                  function={fetchDislikes}
+                  function={handleDislike}
                   className="button"
                   text={'Dislikes'}
                   icon={'trash'}
